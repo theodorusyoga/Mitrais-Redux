@@ -14,11 +14,43 @@ import ES6 from './components/es6';
 import InstaList from './containers/instaList'
 import InstaPanel from './containers/instaPanel'
 import { syncHistoryWithStore, analyticsService } from 'react-router-redux'
+import request from 'superagent'
 
 const store = createStore(empreducer);
 const history = syncHistoryWithStore(browserHistory, store)
-store.getState().pictures = ['abc','def']
-console.log(store.getState())
+
+//init data
+//instagram
+NProgress.start();
+request
+    .get('http://localhost:5000/api/pictures')
+    .end((err, res) => {
+        if (err) {
+            return;
+        }
+        const data = JSON.parse(res.text);
+        let i = 0;
+        store.getState().pictures = data;
+    })
+//employees
+request
+    .get('http://localhost:5000/api')
+    .end((err, res) => {
+        if (err) {
+            return;
+        }
+        const data = JSON.parse(res.text);
+        store.getState().emps = data
+        data.map(item => {
+            if (item.gender == 'Male')
+                store.getState().empcounter.totalMale += 1
+            else
+                store.getState().empcounter.totalFemale += 1
+            store.getState().empcounter.total += 1
+        })
+
+    })
+NProgress.done();
 
 export class ES6Panel extends React.Component {
     render() {

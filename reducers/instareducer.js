@@ -28,14 +28,11 @@ const pictures = (state = [], action) => {
                 ...state,
                 picture(undefined, action)
             ]
-        case 'GET_PIC':
-            var find = state.find(x => x.id == action.id)
-            return find
-        case 'RESET_PIC':
-            return [];
         case 'ADD_LIKE':
             return state.map(item =>
                 picture(item, action))
+        case 'CLEAR_PICTURES':
+            return[]
         default:
             return state;
     }

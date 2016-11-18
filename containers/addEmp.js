@@ -13,10 +13,6 @@ var id;
 var currentid;
 
 class AddEmp extends React.Component {
-
-    componentDidMount() {
-        this.getData();
-    }
     shouldComponentUpdate(nextProps, nextState) {
         return nextProps.detail.id != currentid || nextProps.detail.id == null;
     }
@@ -42,33 +38,6 @@ class AddEmp extends React.Component {
                 genderMale.removeAttribute('checked')
             }
         }
-    }
-
-    getData() {
-        const { dispatch } = this.props
-
-        request
-            .get('http://localhost:5000/api')
-            .end((err, res) => {
-                if (err) {
-                    return;
-                }
-                const data = JSON.parse(res.text);
-                let i = 0;
-                NProgress.start();
-                data.map(item =>
-                    setTimeout(() => {
-                        NProgress.set(i / data.length);
-                        dispatch(addEmp(item))
-                        i++;
-                        if (i / data.length == 1)
-                            NProgress.done();
-                    }, 0)
-
-                )
-
-
-            })
     }
     create(obj, dispatch) {
         NProgress.inc();

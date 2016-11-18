@@ -5,6 +5,8 @@ import empcounter from './empcounter'
 import append from './append'
 import detail from './detail'
 import pictures from './instareducer'
+import picdetails from './instadetails'
+import comments from './instacomments'
 
 const empreducer = combineReducers({
   emps,
@@ -12,6 +14,8 @@ const empreducer = combineReducers({
   append,
   detail,
   pictures,
+  picdetails,
+  comments,
   routing: routerReducer
 })
 
