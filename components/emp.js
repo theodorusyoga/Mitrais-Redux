@@ -1,6 +1,7 @@
 import React from 'react';
 
 class Emp extends React.Component {
+    
     render() {
         const { firstname, midname, surname, gender, birth, onClick, completed, id, text, onDeleteClick } = this.props
         return (

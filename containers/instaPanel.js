@@ -4,6 +4,70 @@ import request from 'superagent'
 import { addComment } from '../actions'
 import { formatDate } from './datetimeFormatter'
 
+const saveComment = (item, dispatch) => {
+    dispatch({type: 'SAVE_COMMENT', id: item.id, text: item.text})
+}
+
+const cancelEditComment = (item, dispatch) => {
+    dispatch({ type: 'CANCEL_COMMENT', id: item.id, text: item.text })
+}
+
+const editComment = (item, dispatch) => {
+    dispatch({ type: 'EDIT_COMMENT', id: item.id, text: item.text })
+}
+
+const deleteComment = (item, dispatch) => {
+    if (!confirm('Do you want to remove this comment?'))
+        return;
+    dispatch({
+        type: 'REMOVE_COMMENT', id: item.id,
+        name: item.name, pictureid: item.pictureid,
+        time: item.time
+    })
+    request
+        .post('http://localhost:5000/api/comments/delete')
+        .send({ id: item.id })
+        .type('form')
+        .end(function(err, res) {
+            if (err || !res.ok) {
+                alert("There's an error while loading picture");
+            } else {
+                let data = res.body;
+                //add dispatch action
+
+                NProgress.done();
+            }
+        });
+}
+
+const likePic = (pic, dispatch) => {
+    request
+        .post('http://localhost:5000/api/pictures/like')
+        .send({ id: pic.id })
+        .type('form')
+        .end(function(err, res) {
+            if (err || !res.ok) {
+                alert("There's an error while loading picture");
+            } else {
+                let data = res.body;
+                //add dispatch action
+                if (data.status == 0) {
+                    dispatch({
+                        type: 'ADD_LIKE_PIC', id: pic.id, desc: pic.desc, src: pic.src,
+                        likes: pic.likes, comments_amt: pic.comments_amt
+                    })
+                }
+                else {
+                    alert('There is something wrong.')
+                }
+
+
+
+                NProgress.done();
+            }
+        });
+}
+
 const onClick = (id, input, dispatch) => {
     NProgress.start();
     request
@@ -21,27 +85,42 @@ const onClick = (id, input, dispatch) => {
             } else {
                 let data = res.body;
                 let disp = addComment(data)
-                console.log(disp)
                 dispatch(disp);
-                
+
                 NProgress.done();
             }
         });
-        input.value = ''
+    input.value = ''
 }
 
 const mapStateToProps = (state, ownProps) => {
     return {
         id: state.routing.locationBeforeTransitions.query.id,
         picture: state.picdetails,
-        comments: state.comments
+        comments: state.comments,
+        editcomment: state.comment
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onClick: (id, input) => 
+        onClick: (id, input) =>
             onClick(id, input, dispatch)
+        ,
+        onLikeClick: (pic) =>
+            likePic(pic, dispatch)
+        ,
+        onDeleteCommentClick: (item) =>
+            deleteComment(item, dispatch)
+        ,
+        onEditClick: (item) =>
+            editComment(item, dispatch)
+        ,
+        onCancelEditClick: (item) =>
+            cancelEditComment(item, dispatch)
+        ,
+        onSaveCommentClick: (item) =>
+            saveComment(item, dispatch)
         ,
         dispatch
     }

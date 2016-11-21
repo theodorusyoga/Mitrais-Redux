@@ -19,107 +19,75 @@ import request from 'superagent'
 const store = createStore(empreducer);
 const history = syncHistoryWithStore(browserHistory, store)
 
-//init data
-//instagram
-NProgress.start();
-request
-    .get('http://localhost:5000/api/pictures')
-    .end((err, res) => {
-        if (err) {
-            return;
-        }
-        const data = JSON.parse(res.text);
-        let i = 0;
-        store.getState().pictures = data;
-    })
-//employees
-request
-    .get('http://localhost:5000/api')
-    .end((err, res) => {
-        if (err) {
-            return;
-        }
-        const data = JSON.parse(res.text);
-        store.getState().emps = data
-        data.map(item => {
-            if (item.gender == 'Male')
-                store.getState().empcounter.totalMale += 1
-            else
-                store.getState().empcounter.totalFemale += 1
-            store.getState().empcounter.total += 1
-        })
 
-    })
-NProgress.done();
+// export class ES6Panel extends React.Component {
+//     render() {
+//         return (
+//             <ES6 />
+//         )
+//     }
+// }
 
-export class ES6Panel extends React.Component {
-    render() {
-        return (
-            <ES6 />
-        )
-    }
-}
+// export class Toptiles extends React.Component {
+//     render() {
+//         return (
+//             <div>
+//                 <Provider store={store}>
+//                     <div>
+//                         <EmpCounterDisp /></div>
+//                 </Provider>
 
-export class Toptiles extends React.Component {
-    render() {
-        return (
-            <div>
-                <Provider store={store}>
-                    <div>
-                        <EmpCounterDisp /></div>
-                </Provider>
+//             </div>
+//         );
+//     }
+// }
 
-            </div>
-        );
-    }
-}
+// export class Xpanel extends React.Component {
+//     render() {
+//         const { children, location } = this.props
+//         return (
 
-export class Xpanel extends React.Component {
-    render() {
-        const { children, location } = this.props
-        return (
+//             <div>
+//                 <Link to="/" className="btn btn-router btn-info">To Do List</Link>
+//                 <Link to="/daily" className="btn btn-router btn-info">Daily Active Users</Link>
+//                 <ReactCSSTransitionGroup transitionName="todo"
+//                     transitionAppear={true}
+//                     transitionEnterTimeout={500}
+//                     transitionLeaveTimeout={500}
+//                     transitionAppearTimeout={500}
+//                     >
+//                     {React.cloneElement(children, {
+//                         key: location.pathname
+//                     })}
+//                 </ReactCSSTransitionGroup>
 
-            <div>
-                <Link to="/" className="btn btn-router btn-info">To Do List</Link>
-                <Link to="/daily" className="btn btn-router btn-info">Daily Active Users</Link>
-                <ReactCSSTransitionGroup transitionName="todo"
-                    transitionAppear={true}
-                    transitionEnterTimeout={500}
-                    transitionLeaveTimeout={500}
-                    transitionAppearTimeout={500}
-                    >
-                    {React.cloneElement(children, {
-                        key: location.pathname
-                    })}
-                </ReactCSSTransitionGroup>
-
-            </div >
-        )
-    }
-}
+//             </div >
+//         )
+//     }
+// }
 
 
-export class Daily extends React.Component {
-    render() {
-        return (
-            <Provider store={store}>
-                <div>
-                    <DailyPanel /></div>
-            </Provider>
-        )
-    }
-}
+// export class Daily extends React.Component {
+//     render() {
+//         return (
+//             <Provider store={store}>
+//                 <div>
+//                     <DailyPanel /></div>
+//             </Provider>
+//         )
+//     }
+// }
 
-export class Panel extends React.Component {
-    render() {
-        return (
-            <Provider store={store}>
-                <div>
-                    <PanelTodo /></div>
-            </Provider>
-        )
-    }
-}
+// export class Panel extends React.Component {
+//     render() {
+//         return (
+//             <Provider store={store}>
+//                 <div>
+//                     <PanelTodo /></div>
+//             </Provider>
+//         )
+//     }
+// }
 
 export class InstaIndex extends React.Component {
     render() {
@@ -196,20 +164,20 @@ export class InstaDetails extends React.Component {
     }
 }
 
-class App extends React.Component {
-    render() {
-        return (
-            <div>
-                <Provider store={store}>
-                    <div>
-                        <AddEmp />
-                        <VisibleEmpList />
-                    </div>
-                </Provider>
-            </div>
-        )
+// class App extends React.Component {
+//     render() {
+//         return (
+//             <div>
+//                 <Provider store={store}>
+//                     <div>
+//                         <AddEmp />
+//                         <VisibleEmpList />
+//                     </div>
+//                 </Provider>
+//             </div>
+//         )
 
-    }
-}
+//     }
+// }
 
-export default App
+export default InstaIndex

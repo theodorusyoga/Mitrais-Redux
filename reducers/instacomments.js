@@ -16,6 +16,8 @@ const comment = (state = {}, action) => {
 
 const comments = (state = [], action) => {
     switch (action.type) {
+        case 'GET_COMMENTS':
+            return action.comments
         case 'ADD_COMMENT':
             return [
                 ...state,
@@ -23,6 +25,13 @@ const comments = (state = [], action) => {
             ]
         case 'RESET_COMMENT':
             return []
+        case 'REMOVE_COMMENT':
+            let index = state.findIndex(p => p.id == action.id)
+            return [
+                ...state.slice(0, index),
+                ...state.slice(index+1)
+            ]
+            
         default:
             return state;
     }

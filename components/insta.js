@@ -1,9 +1,23 @@
 import React from 'react'
 import { IndexRoute, Router, Route, Link, hashHistory, browserHistory } from 'react-router'
 import { addPic } from '../actions'
+import request from 'superagent'
+
 
 class Insta extends React.Component {
-
+    componentWillMount() {
+        const { dispatch } = this.props
+        request
+            .get('http://localhost:5000/api/pictures')
+            .end((err, res) => {
+                if (err) {
+                    return;
+                }
+                const data = JSON.parse(res.text);
+                let i = 0;
+                dispatch({ type: 'STORE_PICTURES', pictures: data })
+            })
+    }
     render() {
         const { pictures, onLikeClick, onOpenClick } = this.props
         return (
@@ -33,5 +47,18 @@ class Insta extends React.Component {
         )
     }
 }
+
+Insta.propTypes = {
+    pictures: React.PropTypes.arrayOf(React.PropTypes.shape({
+        id: React.PropTypes.number.isRequired,
+        src: React.PropTypes.string.isRequired,
+        desc: React.PropTypes.string.isRequired,
+        likes: React.PropTypes.number.isRequired,
+        comments_amt: React.PropTypes.number.isRequired
+    }).isRequired).isRequired,
+    onOpenClick: React.PropTypes.func.isRequired,
+    onLikeClick: React.PropTypes.func.isRequired,
+    dispatch: React.PropTypes.func.isRequired
+};
 
 export default Insta

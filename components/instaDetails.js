@@ -4,11 +4,37 @@ import { addPic } from '../actions'
 import request from 'superagent'
 
 var commentbox;
+var editcommentdiv = []; //untuk dynamic control div
+var editcommentbox = []; //untuk dynamic control textbox
+var commenttext = []; //untuk dynamic control text commentnya
 
 class InstaDetails extends React.Component {
+
+    componentWillUpdate(nextProps, nextState) {
+        let { editcomment } = nextProps
+        if (editcomment.id != undefined) {
+            let i = editcommentdiv.findIndex(p => p.id == editcomment.id + '_div')
+            let j = commenttext.findIndex(p => p.id == editcomment.id + '_span')
+
+            if (editcomment.type == 'EDIT') {
+                editcommentdiv[i].style.display = 'block'
+                editcommentbox[i].value = nextProps.editcomment.text
+                commenttext[j].style.display = 'none'
+            }
+            else if (editcomment.type == 'CANCEL') {
+                editcommentdiv[i].style.display = 'none'
+                editcommentbox[i].value = nextProps.editcomment.text
+                commenttext[j].style.display = 'block'
+            }
+        }
+    }
     componentWillUnmount() {
         const { dispatch } = this.props
         dispatch({ type: 'CLEAR_PICTURES' })
+        dispatch({ type: 'RESET_COMMENT_EDIT' })
+        editcommentdiv = []; //untuk dynamic control div
+        editcommentbox = []; //untuk dynamic control textbox
+        commenttext = [];
         //load pictures data again to refresh
         request
             .get('http://localhost:5000/api/pictures')
@@ -24,10 +50,16 @@ class InstaDetails extends React.Component {
             })
     }
     render() {
-
-        const { id, picture, comments, onClick } = this.props
-        var style = {
+        const { id, picture, comment, comments, onClick, onLikeClick, onDeleteCommentClick,
+            onEditClick, onCancelEditClick, onSaveCommentClick } = this.props
+        var buttonstyle = {
             width: '49.1%'
+        }
+        var editstylenone = {
+            display: 'none'
+        }
+        var editstyleblock = {
+            display: 'block'
         }
         return (
             <div className="x_content">
@@ -47,9 +79,9 @@ class InstaDetails extends React.Component {
                 </div>
                 <div className="row">
                     <div className="col-xs-12 col-md-12">
-                        <p><a style={style} href="#" className="instabtn btn btn-default" role="button">
-                            <b>{picture.likes}</b>&nbsp;<span className="glyphicon glyphicon-heart"></span></a>
-                            <Link style={style} to={{ pathname: '/view', query: { id: 0 } }} className="instabtn btn btn-default">
+                        <p><button onClick={() => onLikeClick(picture)} style={buttonstyle} className="instabtn btn btn-default">
+                            <b>{picture.likes}</b>&nbsp;<span className="glyphicon glyphicon-heart"></span></button>
+                            <Link style={buttonstyle} to={{ pathname: '/view', query: { id: 0 } }} className="instabtn btn btn-default">
                                 <b>{picture.comments_amt}   </b>&nbsp;
                                         <span className="glyphicon glyphicon-comment"></span></Link></p>
                     </div>
@@ -65,11 +97,16 @@ class InstaDetails extends React.Component {
                                             <h6 className="comment-name by-author"><a href="http://creaticode.com/blog">{item.name}</a></h6>
                                             <span>{item.time}</span>
 
-                                            <i className="fa fa-times"></i>
-                                            <i className="fa fa-pencil"></i>
+                                            <i onClick={() => onDeleteCommentClick(item)} className="fa fa-times"></i>
+                                            <i onClick={() => onEditClick(item)} className="fa fa-pencil"></i>
                                         </div>
                                         <div className="comment-content">
-                                            {item.text}
+                                            <div id={item.id + '_span'} ref={node => commenttext[i] = node} >{item.text}</div>
+                                            <div id={item.id + '_div'} ref={node => editcommentdiv[i] = node} style={editstylenone}>
+                                                <input ref={node => editcommentbox[i] = node} type="text" id={item.id} className="form-control" placeholder="Edit comment..." />
+                                                <button id={item.id + '_save'} onClick={() => onSaveCommentClick(item)} className="btn btn-success"><span className="glyphicon glyphicon-floppy-disk"></span>&nbsp;Save</button>
+                                                <button id={item.id + '_cancel'} onClick={() => onCancelEditClick(item)} className="btn btn-danger"><span className="glyphicon glyphicon-remove"></span>&nbsp;Cancel</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -83,7 +120,6 @@ class InstaDetails extends React.Component {
                         <div className="widget-area no-padding blank">
 
                             <div className="status-upload">
-
                                 <textarea ref={node => commentbox = node} placeholder="What are you thinking about this picture?" ></textarea>
 
                                 <button type="submit" onClick={() => onClick(id, commentbox)} className="btn btn-success green"><i className="fa fa-share"></i> Share</button>
@@ -98,5 +134,28 @@ class InstaDetails extends React.Component {
         )
     }
 }
+
+InstaDetails.propTypes = {
+    id: React.PropTypes.string.isRequired,
+    picture: React.PropTypes.shape({
+        id: React.PropTypes.number.isRequired,
+        src: React.PropTypes.string.isRequired,
+        desc: React.PropTypes.string.isRequired,
+        likes: React.PropTypes.number.isRequired,
+        comments_amt: React.PropTypes.number.isRequired
+    }),
+    comments: React.PropTypes.arrayOf(React.PropTypes.shape({
+        id: React.PropTypes.number.isRequired,
+        time: React.PropTypes.string.isRequired,
+        text: React.PropTypes.string.isRequired,
+        name: React.PropTypes.string.isRequired,
+    }).isRequired).isRequired,
+    onClick: React.PropTypes.func.isRequired,
+    onLikeClick: React.PropTypes.func.isRequired,
+    onDeleteCommentClick: React.PropTypes.func.isRequired,
+    onEditClick: React.PropTypes.func.isRequired,
+    onCancelEditClick: React.PropTypes.func.isRequired,
+    dispatch: React.PropTypes.func.isRequired
+};
 
 export default InstaDetails

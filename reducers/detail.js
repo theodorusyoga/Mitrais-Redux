@@ -1,5 +1,5 @@
 const detail = (state = {
-  
+
 }, action) => {
     switch (action.type) {
         case 'GET':

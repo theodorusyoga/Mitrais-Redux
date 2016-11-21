@@ -33,6 +33,8 @@ const pictures = (state = [], action) => {
                 picture(item, action))
         case 'CLEAR_PICTURES':
             return[]
+        case 'STORE_PICTURES':
+            return action.pictures
         default:
             return state;
     }

@@ -1,8 +1,29 @@
 import React from 'react';
 import Emp from './emp';
+import request from 'superagent'
 
 class Emplist extends React.Component {
-    
+    componentWillMount() {
+        const { dispatch } = this.props
+        request
+            .get('http://localhost:5000/api')
+            .end((err, res) => {
+                if (err) {
+                    return;
+                }
+                const data = JSON.parse(res.text);
+
+                dispatch({ type: 'GET_EMPLOYEES', emps: data })
+         
+                data.map(item => {
+                    if (item.gender == 'Male')
+                        dispatch({ type: 'ADD_MALE', counter: 'ADD_MALE' })
+                    else
+                        dispatch({ type: 'ADD_FEMALE', counter: 'ADD_MALE' })
+                })
+
+            })
+    }
     render() {
         const { emps, onEmpClick, onDeleteClick } = this.props
 
@@ -24,7 +45,7 @@ class Emplist extends React.Component {
                         <Emp id={emp.id} key={emp.id} firstname={emp.firstname}
                             surname={emp.surname} midname={emp.midname}
                             gender={emp.gender} birth={emp.birth}
-                            onClick={() =>  onEmpClick(emp)}
+                            onClick={() => onEmpClick(emp)}
                             onDeleteClick={() => onDeleteClick(emp)} />
                     )}
                 </tbody>
@@ -44,7 +65,8 @@ Emplist.propTypes = {
         birth: React.PropTypes.string.isRequired
     }).isRequired).isRequired,
     onEmpClick: React.PropTypes.func.isRequired,
-    onDeleteClick: React.PropTypes.func.isRequired
+    onDeleteClick: React.PropTypes.func.isRequired,
+    dispatch: React.PropTypes.func.isRequired
 };
 
 export default Emplist;

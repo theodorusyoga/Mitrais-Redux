@@ -38,6 +38,8 @@ const emp = (state = {}, action) => {
 //load initial data
 const emps = (state = [], action) => {
     switch (action.type) {
+        case 'GET_EMPLOYEES':
+            return action.emps
         case 'ADD':
             return [
                 ...state,
@@ -46,25 +48,20 @@ const emps = (state = [], action) => {
         case 'CLEAR':
             return [];
         case 'EDIT':
-            return state.map(item => 
+            return state.map(item =>
                 emp(item, action)
             );
         case 'DELETE':
             if (!confirm('Are you sure you want to remove record #' + (action.id) + '?')) {
                 return;
             }
-            state.map(p => {
-                if (p.id !== action.id) {
-                    return;
-                }
-                del(action);
-                let index = state.indexOf(p);
-                state = [
-                    ...state.slice(0, index),
-                    ...state.slice(index + 1)
-                ];
-            }
-            );
+            del(action);
+            let index = state.findIndex(p => p.id == action.id)
+            return [
+                ...state.slice(0, index),
+                ...state.slice(index + 1)
+            ]
+
         default:
             return state;
     }

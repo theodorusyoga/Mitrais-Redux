@@ -29,7 +29,8 @@ const mapDispatchToProps = (dispatch) => {
     },
     onDeleteClick: (obj) => {
       dispatch(deleteEmp(obj))
-    }
+    },
+    dispatch
   }
 }
 
