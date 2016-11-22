@@ -22,6 +22,13 @@ const comment = (state = {
                 text: ''
             }
             return obj
+        case 'INITIATE_SAVE_COMMENT':
+            return {
+                id: action.id,
+                type: 'SAVE'
+            }
+        case 'SAVE_COMMENT':
+            return {} //remove status
         case 'RESET_COMMENT_EDIT':
             return {}
         default:

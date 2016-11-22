@@ -10,8 +10,24 @@ var commenttext = []; //untuk dynamic control text commentnya
 
 class InstaDetails extends React.Component {
 
+    editComment(id, text) {
+        NProgress.start()
+        request
+            .post('http://localhost:5000/api/comments/update')
+            .send({ id: id, text: text })
+            .type('form')
+            .end(function (err, res) {
+                if (err || !res.ok) {
+                    alert("There's an error while updating comment");
+                } else {
+                    NProgress.done()
+                }
+            });
+    }
+
     componentWillUpdate(nextProps, nextState) {
         let { editcomment } = nextProps
+        let { dispatch } = this.props
         if (editcomment.id != undefined) {
             let i = editcommentdiv.findIndex(p => p.id == editcomment.id + '_div')
             let j = commenttext.findIndex(p => p.id == editcomment.id + '_span')
@@ -25,6 +41,16 @@ class InstaDetails extends React.Component {
                 editcommentdiv[i].style.display = 'none'
                 editcommentbox[i].value = nextProps.editcomment.text
                 commenttext[j].style.display = 'block'
+            }
+            else if (editcomment.type == 'SAVE') {
+                editcommentdiv[i].style.display = 'none'
+                commenttext[j].style.display = 'block'
+                dispatch({
+                    type: 'SAVE_COMMENT',
+                    id: editcomment.id,
+                    text: editcommentbox[i].value
+                })
+                this.editComment(editcomment.id, editcommentbox[i].value)
             }
         }
     }
@@ -104,7 +130,7 @@ class InstaDetails extends React.Component {
                                             <div id={item.id + '_span'} ref={node => commenttext[i] = node} >{item.text}</div>
                                             <div id={item.id + '_div'} ref={node => editcommentdiv[i] = node} style={editstylenone}>
                                                 <input ref={node => editcommentbox[i] = node} type="text" id={item.id} className="form-control" placeholder="Edit comment..." />
-                                                <button id={item.id + '_save'} onClick={() => onSaveCommentClick(item)} className="btn btn-success"><span className="glyphicon glyphicon-floppy-disk"></span>&nbsp;Save</button>
+                                                <button id={item.id + '_save'} onClick={() => onSaveCommentClick(item.id)} className="btn btn-success"><span className="glyphicon glyphicon-floppy-disk"></span>&nbsp;Save</button>
                                                 <button id={item.id + '_cancel'} onClick={() => onCancelEditClick(item)} className="btn btn-danger"><span className="glyphicon glyphicon-remove"></span>&nbsp;Cancel</button>
                                             </div>
                                         </div>

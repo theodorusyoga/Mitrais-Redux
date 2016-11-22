@@ -4,8 +4,8 @@ import request from 'superagent'
 import { addComment } from '../actions'
 import { formatDate } from './datetimeFormatter'
 
-const saveComment = (item, dispatch) => {
-    dispatch({type: 'SAVE_COMMENT', id: item.id, text: item.text})
+const initiateSaveComment = (id, dispatch) => {
+    dispatch({ type: 'INITIATE_SAVE_COMMENT', id: id })
 }
 
 const cancelEditComment = (item, dispatch) => {
@@ -28,9 +28,9 @@ const deleteComment = (item, dispatch) => {
         .post('http://localhost:5000/api/comments/delete')
         .send({ id: item.id })
         .type('form')
-        .end(function(err, res) {
+        .end(function (err, res) {
             if (err || !res.ok) {
-                alert("There's an error while loading picture");
+                alert("There's an error while deleting comment");
             } else {
                 let data = res.body;
                 //add dispatch action
@@ -45,9 +45,9 @@ const likePic = (pic, dispatch) => {
         .post('http://localhost:5000/api/pictures/like')
         .send({ id: pic.id })
         .type('form')
-        .end(function(err, res) {
+        .end(function (err, res) {
             if (err || !res.ok) {
-                alert("There's an error while loading picture");
+                alert("There's an error while liking picture");
             } else {
                 let data = res.body;
                 //add dispatch action
@@ -79,7 +79,7 @@ const onClick = (id, input, dispatch) => {
             Time: formatDate(new Date())
         })
         .type('form')
-        .end(function(err, res) {
+        .end(function (err, res) {
             if (err || !res.ok) {
                 alert("There's an error while posting comment");
             } else {
@@ -119,8 +119,8 @@ const mapDispatchToProps = (dispatch) => {
         onCancelEditClick: (item) =>
             cancelEditComment(item, dispatch)
         ,
-        onSaveCommentClick: (item) =>
-            saveComment(item, dispatch)
+        onSaveCommentClick: (id) =>
+            initiateSaveComment(id, dispatch)
         ,
         dispatch
     }

@@ -8,7 +8,12 @@ const comment = (state = {}, action) => {
                 time: action.time,
                 name: action.name
             }
-
+        case 'SAVE_COMMENT':
+            if (state.id != action.id)
+                return state
+            return Object.assign({}, state, {
+                text: action.text, //set new comment text
+            })
         default:
             return state
     }
@@ -29,9 +34,11 @@ const comments = (state = [], action) => {
             let index = state.findIndex(p => p.id == action.id)
             return [
                 ...state.slice(0, index),
-                ...state.slice(index+1)
+                ...state.slice(index + 1)
             ]
-            
+        case 'SAVE_COMMENT':
+            return state.map(item =>
+                comment(item, action))
         default:
             return state;
     }

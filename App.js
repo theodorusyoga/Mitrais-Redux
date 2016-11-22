@@ -13,6 +13,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import ES6 from './components/es6';
 import InstaList from './containers/instaList'
 import InstaPanel from './containers/instaPanel'
+import Validate from './containers/validate'
 import { syncHistoryWithStore, analyticsService } from 'react-router-redux'
 import request from 'superagent'
 
@@ -96,7 +97,8 @@ export class InstaIndex extends React.Component {
                 <Provider store={store}>
                     <Router history={history}>
                         <Route path="/" component={InstaRoot}>
-                            <IndexRoute component={Insta} />
+                            <IndexRoute component={Validate} />
+                            <Route path="/home" component={Insta}/>
                             <Route path="/view" component={InstaDetails} />
                         </Route>
                     </Router>
