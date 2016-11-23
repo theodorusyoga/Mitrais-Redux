@@ -18,7 +18,7 @@ import { syncHistoryWithStore, analyticsService } from 'react-router-redux'
 import request from 'superagent'
 
 const store = createStore(empreducer);
-const history = syncHistoryWithStore(browserHistory, store)
+const history = syncHistoryWithStore(hashHistory, store)
 
 
 // export class ES6Panel extends React.Component {

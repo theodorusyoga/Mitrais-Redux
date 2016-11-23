@@ -61,7 +61,8 @@ const openDetails = (id, dispatch) => {
 
 const mapStateToProps = (state) => {
     return {
-        pictures: state.pictures
+        pictures: state.pictures,
+        login: state.login
     }
 }
 
