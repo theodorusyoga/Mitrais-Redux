@@ -1,13 +1,15 @@
 const login = (state = {}, action) => {
-    switch(action.type){
+    switch (action.type) {
         case 'GET_ACCESSTOKEN':
-            return{
+            return {
                 username: action.username,
                 password: action.password,
                 accesstoken: action.accesstoken,
                 expires: action.expires
             }
-        default: 
+        case 'CLEAR_CREDENTIAL':
+            return {}
+        default:
             return state
     }
 }

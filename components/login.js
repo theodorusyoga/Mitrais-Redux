@@ -1,20 +1,46 @@
 import React from 'react'
 import { hashHistory } from 'react-router'
+import cookie from 'react-cookie'
 
 var username;
 var password;
 
 class Login extends React.Component {
-    componentWillUpdate(nextProps, nextState){
-        if(nextProps.login.accesstoken != undefined && nextProps.login.accesstoken != ''){
-              NProgress.done()
-              hashHistory.push('/home')
+    componentDidMount() {
+        const { dispatch, onLoginClick } = this.props
+        let token = cookie.load('accesstoken')
+        let expires = cookie.load('expires')
+        let username = cookie.load('username')
+        let pwd = cookie.load('password')
+        if (token != '' && token != undefined) { 
+            if (new Date(expires) > new Date()) { //if still valid
+                dispatch({
+                    type: 'GET_ACCESSTOKEN',
+                    username: username,
+                    password: pwd,
+                    accesstoken: token,
+                    expires: expires
+                })
+                hashHistory.push('/home')
+            }
+            else{ //if expired
+                console.log('token refreshed')
+                onLoginClick(username, pwd);
+            }
+
+
+        }
+    }
+    componentWillUpdate(nextProps, nextState) {
+        if (nextProps.login.accesstoken != undefined && nextProps.login.accesstoken != '') {
+            NProgress.done()
+            hashHistory.push('/home')
         }
     }
     render() {
         const { onLoginClick } = this.props
         return (
-             <div className="x_panel loginpanel">
+            <div className="x_panel loginpanel">
                 <div className="logo">login to fakestagram</div>
                 <div className="login-form-1">
                     <form id="login-form" className="text-left">

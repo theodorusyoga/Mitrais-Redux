@@ -1,13 +1,28 @@
 import { connect } from 'react-redux'
 import Insta from '../components/insta'
 import request from 'superagent'
+import cookie from 'react-cookie'
+import { hashHistory } from 'react-router'
+
+const logout = (dispatch) => {
+    if (confirm('Are you sure you want to logout?')) {
+        cookie.remove('username')
+        cookie.remove('password')
+        cookie.remove('accesstoken')
+        cookie.remove('expires')
+        dispatch({ type: 'CLEAR_CREDENTIAL' })
+        dispatch({ type: 'CLEAR_PICTURES' })
+        hashHistory.push('/')
+    }
+
+}
 
 const likePic = (pic, dispatch) => {
     request
         .post('http://localhost:5000/api/pictures/like')
         .send({ id: pic.id })
         .type('form')
-        .end(function(err, res) {
+        .end(function (err, res) {
             if (err || !res.ok) {
                 alert("There's an error while loading picture");
             } else {
@@ -38,7 +53,7 @@ const openDetails = (id, dispatch) => {
         .post('http://localhost:5000/api/picture')
         .send({ id: id })
         .type('form')
-        .end(function(err, res) {
+        .end(function (err, res) {
             if (err || !res.ok) {
                 alert("There's an error while loading picture");
             } else {
@@ -74,6 +89,9 @@ const mapDispatchToProps = (dispatch) => {
         onOpenClick: (id) =>
             openDetails(id, dispatch)
         ,
+        onLogout: () => {
+            logout(dispatch)
+        },
         dispatch
 
     }

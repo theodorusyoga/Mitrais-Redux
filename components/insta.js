@@ -24,6 +24,7 @@ class Insta extends React.Component {
             .use(this.bearer.bind(this))
             .end((err, res) => {
                 if (err) {
+                    hashHistory.push('/')
                     return;
                 }
                 const data = JSON.parse(res.text);
@@ -33,60 +34,18 @@ class Insta extends React.Component {
 
 
 
-        // $.ajax({
-        //     type: "GET",
-        //     url: 'https://localhost:44372/api/pictures',
-        //     beforeSend: function (xhr) { 
-        //         console.log('header added')
-        //         xhr.withCredentials = true;
-        //         xhr.setRequestHeader('Authorization', 'Bearer ' + accesstoken); 
-        //     xhr.setRequestHeader('Cache-Control', 'no-cache'); },
-        //     success: (data) => {
-        //         console.log(data)
-        //     }
 
-        // });
-
-
-
-        // var xhttp = new XMLHttpRequest();
-        // xhttp.onreadystatechange = function () {
-        //     if (this.readyState == 4 && this.status == 200) {
-        //         // Typical action to be performed when the document is ready:
-        //         console.log(xhttp.responseText);
-        //     }
-        // };
-        // xhttp.open("GET", "http://localhost:5000/api/pictures/", true);
-        // xhttp.setRequestHeader("Authorization", 'Bearer ' + accesstoken);
-        // xhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        // xhttp.setRequestHeader("Accept", 'testing');
-        // xhttp.setRequestHeader('X-Alt-Referer', 'http://localhost:8080');
-        // xhttp.responseType = 'text';
-        // xhttp.withCredentials = true;
-        //  console.log(xhttp)
-        // xhttp.send();
-
-        // var obj = {
-        //     method: 'GET',
-        //     headers: {
-        //         'Authorization': 'Bearer ' + accesstoken,
-        //         'Content-Type': 'application/json',
-        //         'X-Requested-With': 'XMLHttpRequest'
-        //     },
-        // }
-
-        // fetch("http://localhost:5000/api/pictures/", obj)
-        //     .then((response) => {
-        //         console.log(response)
-        //     })
-        //     .then((json) => {
-        //         console.log(json)
-        //     });
     }
     render() {
-        const { pictures, onLikeClick, onOpenClick } = this.props
+        const { pictures, onLikeClick, onOpenClick, onLogout } = this.props
         return (
             <div className="x_content">
+                <div className="row">
+                    <div className="col sm-12 col-md-12">
+                        <button onClick={() => onLogout()} className="pull-right btn btn-danger"><span className="glyphicon glyphicon-log-out"></span>&nbsp;Log Out</button>
+                    </div>
+                </div>
+                <br/>
                 <div className="row">
                     {pictures.map((pic, i) =>
                         <div key={pic.id} className="col-sm-6 col-md-4">
