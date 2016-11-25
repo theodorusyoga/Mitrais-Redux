@@ -21,7 +21,6 @@ class Insta extends React.Component {
         request
             .get('http://localhost:5000/api/pictures/')
             .authBearer(accesstoken)
-            .use(this.bearer.bind(this))
             .end((err, res) => {
                 if (err) {
                     hashHistory.push('/')
@@ -37,7 +36,13 @@ class Insta extends React.Component {
 
     }
     render() {
-        const { pictures, onLikeClick, onOpenClick, onLogout } = this.props
+        const { pictures, onLikeClick, onDislikeClick, onOpenClick, onLogout, login } = this.props
+        let nolike = {
+            color: 'black'
+        }
+        let withlike = {
+            color: 'red'
+        }
         return (
             <div className="x_content">
                 <div className="row">
@@ -55,8 +60,8 @@ class Insta extends React.Component {
                                 <div className="caption">
                                     <p>{pic.desc}</p>
                                     <br />
-                                    <p><button onClick={() => onLikeClick(pic)} href="#" className="instabtn btn btn-default" role="button">
-                                        <b>{pic.likes}</b>&nbsp;<span className="glyphicon glyphicon-heart"></span></button>
+                                    <p><button onClick={pic.liked ? () => onDislikeClick(pic, login.accesstoken) : () => onLikeClick(pic, login.accesstoken)} href="#" className="instabtn btn btn-default" role="button">
+                                        <span style={pic.liked ? withlike : nolike}><b>{pic.likes}</b>&nbsp;<span className="glyphicon glyphicon-heart"></span></span></button>
                                         <Link onClick={() => onOpenClick(pic.id)} to={{ pathname: '/view', query: { id: pic.id } }} className="instabtn btn btn-default">
                                             <b>{pic.comments_amt}</b>&nbsp;
                                         <span className="glyphicon glyphicon-comment"></span></Link></p>

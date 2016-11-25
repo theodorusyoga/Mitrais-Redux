@@ -4,6 +4,9 @@ import request from 'superagent'
 import cookie from 'react-cookie'
 import { hashHistory } from 'react-router'
 
+require('superagent-auth-bearer')(request)
+
+
 const logout = (dispatch) => {
     if (confirm('Are you sure you want to logout?')) {
         cookie.remove('username')
@@ -17,10 +20,40 @@ const logout = (dispatch) => {
 
 }
 
-const likePic = (pic, dispatch) => {
+const dislikePic = (pic, token, dispatch) => {
+
+    request
+        .post('http://localhost:5000/api/pictures/unlike')
+        .send({ PictureID: pic.id })
+        .authBearer(token)
+        .type('form')
+        .end(function (err, res) {
+            if (err || !res.ok) {
+                alert("There's an error while loading picture");
+            } else {
+                let data = res.body;
+                //add dispatch action
+                if (data.status == 0) {
+                    dispatch({
+                        type: 'REMOVE_LIKE', id: pic.id, desc: pic.desc, src: pic.src,
+                        likes: pic.likes, comments_amt: pic.comments_amt
+                    })
+                }
+                else {
+                    alert('There is something wrong.')
+                }
+                NProgress.done();
+            }
+        });
+
+
+}
+
+const likePic = (pic, token, dispatch) => {
     request
         .post('http://localhost:5000/api/pictures/like')
-        .send({ id: pic.id })
+        .send({ PictureID: pic.id })
+        .authBearer(token)
         .type('form')
         .end(function (err, res) {
             if (err || !res.ok) {
@@ -83,8 +116,11 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onLikeClick: (pic) => {
-            likePic(pic, dispatch)
+        onLikeClick: (pic, token) => {
+            likePic(pic, token, dispatch)
+        },
+        onDislikeClick: (pic, token) => {
+            dislikePic(pic, token, dispatch)
         },
         onOpenClick: (id) =>
             openDetails(id, dispatch)
