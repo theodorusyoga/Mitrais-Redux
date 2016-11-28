@@ -7,7 +7,7 @@ module.exports = {
         filename: 'index.js'
     },
     devServer: {
-       inline: true,
+        inline: true,
         port: 8080
     },
     module:

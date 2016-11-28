@@ -3,6 +3,8 @@ import { Link } from 'react-router'
 import { addPic } from '../actions'
 import request from 'superagent'
 
+import { Card, CardActions, CardHeader, CardMedia, CardTitle, CardText } from 'material-ui/Card'
+
 require('superagent-auth-bearer')(request)
 
 var commentbox;
@@ -44,12 +46,12 @@ class InstaDetails extends React.Component {
     }
     componentWillUnmount() {
         const { dispatch, login } = this.props
-      
+
         dispatch({ type: 'RESET_COMMENT_EDIT' })
         editcommentdiv = []; //untuk dynamic control div
         editcommentbox = []; //untuk dynamic control textbox
         commenttext = [];
-      
+
     }
     render() {
         const { id, picture, comment, comments, login, onClick, onLikeClick, onUnlikeClick, onDeleteCommentClick,
@@ -63,7 +65,7 @@ class InstaDetails extends React.Component {
         var editstyleblock = {
             display: 'block'
         }
-          let nolike = {
+        let nolike = {
             color: 'black'
         }
         let withlike = {
@@ -87,7 +89,7 @@ class InstaDetails extends React.Component {
                 </div>
                 <div className="row">
                     <div className="col-xs-12 col-md-12">
-                        <p><button onClick={ picture.liked ? () => onUnlikeClick(picture, login.accesstoken) : () => onLikeClick(picture, login.accesstoken)} style={buttonstyle} className="instabtn btn btn-default">
+                        <p><button onClick={picture.liked ? () => onUnlikeClick(picture, login.accesstoken) : () => onLikeClick(picture, login.accesstoken)} style={buttonstyle} className="instabtn btn btn-default">
                             <span style={picture.liked ? withlike : nolike}><b>{picture.likes}</b>&nbsp;<span className="glyphicon glyphicon-heart"></span></span></button>
                             <Link style={buttonstyle} to={{ pathname: '/view', query: { id: 0 } }} className="instabtn btn btn-default">
                                 <b>{picture.comments_amt}   </b>&nbsp;

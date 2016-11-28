@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import App from './App.js';
 import { ES6Panel, Xpanel, Toptiles, Daily, Panel, InstaIndex } from './App.js';
 import { IndexRoute, Router, Route, Link, hashHistory, browserHistory } from 'react-router';
-
+var injectTapEventPlugin = require("react-tap-event-plugin");
+injectTapEventPlugin();
 
 // ReactDOM.render( <App/>, document.getElementById('app'));
 // ReactDOM.render(<Toptiles />, document.getElementById('toptiles'));

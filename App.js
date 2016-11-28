@@ -17,6 +17,13 @@ import Validate from './containers/validate'
 import { syncHistoryWithStore, analyticsService } from 'react-router-redux'
 import request from 'superagent'
 
+//material ui
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import getMuiTheme from 'material-ui/styles/getMuiTheme'
+import { cyan500 } from 'material-ui/styles/colors'
+
+
+
 const enhancers = compose(
     window.devToolsExtension ? window.devToolsExtension() : f => f
 )
@@ -41,7 +48,7 @@ const history = syncHistoryWithStore(hashHistory, store)
 //                     <div>
 //                         <EmpCounterDisp /></div>
 //                 </Provider>
-    
+
 //             </div>
 //         );
 //     }
@@ -94,20 +101,32 @@ const history = syncHistoryWithStore(hashHistory, store)
 //     }
 // }
 
+const muiTheme = getMuiTheme({
+    palette:{
+        textColor: cyan500
+    },
+    appBar:{
+        height: 50
+    },
+    fontFamily: 'Titillium Web'
+})
+
 export class InstaIndex extends React.Component {
     render() {
         return (
-            <div>
-                <Provider store={store}>
-                    <Router history={history}>
-                        <Route path="/" component={InstaRoot}>
-                            <IndexRoute component={Validate} />
-                            <Route path="/home" component={Insta}/>
-                            <Route path="/view" component={InstaDetails} />
-                        </Route>
-                    </Router>
-                </Provider>
-            </div>
+            <MuiThemeProvider muiTheme={muiTheme}>
+                <div>
+                    <Provider store={store}>
+                        <Router history={history}>
+                            <Route path="/" component={InstaRoot}>
+                                <IndexRoute component={Validate} />
+                                <Route path="/home" component={Insta} />
+                                <Route path="/view" component={InstaDetails} />
+                            </Route>
+                        </Router>
+                    </Provider>
+                </div>
+            </MuiThemeProvider>
         )
     }
 }

@@ -102,6 +102,8 @@ const openDetails = (id, token, dispatch) => {
                     dispatch({ type: 'GET_COMMENTS', comments: data.comments, comments_amt: data.comments_amt })
                 }
 
+                hashHistory.push('/view/')
+
 
                 NProgress.done();
             }
