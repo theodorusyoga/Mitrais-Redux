@@ -4,6 +4,7 @@ const login = (state = {}, action) => {
             return {
                 username: action.username,
                 password: action.password,
+                fullname: action.fullname,
                 accesstoken: action.accesstoken,
                 expires: action.expires
             }

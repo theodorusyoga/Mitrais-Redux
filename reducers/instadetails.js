@@ -7,6 +7,7 @@ const picdetails = (state = {}, action) => {
                 src: action.src,
                 desc: action.desc,
                 likes: action.likes,
+                liked: action.liked,
                 comments_amt: 0
             }
         case 'GET_COMMENTS': {
@@ -23,6 +24,7 @@ const picdetails = (state = {}, action) => {
                 id: 0,
                 desc: 'Loading...',
                 likes: 0,
+                liked: false,
                 comments_amt: 0,
                 src: '/images/loader.gif'
             }
@@ -32,6 +34,16 @@ const picdetails = (state = {}, action) => {
                 src: action.src,
                 desc: action.desc,
                 likes: action.likes + 1,
+                liked: true,
+                comments_amt: action.comments_amt
+            }
+        case 'REMOVE_LIKE_PIC':
+            return {
+                id: action.id,
+                src: action.src,
+                desc: action.desc,
+                likes: action.likes - 1,
+                liked: false,
                 comments_amt: action.comments_amt
             }
         case 'REMOVE_COMMENT':

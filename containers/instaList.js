@@ -78,12 +78,13 @@ const likePic = (pic, token, dispatch) => {
         });
 }
 
-const openDetails = (id, dispatch) => {
+const openDetails = (id, token, dispatch) => {
     dispatch({ type: 'CLEAR_PIC' })
     dispatch({ type: 'RESET_COMMENT' })
     NProgress.start();
     request
         .post('http://localhost:5000/api/picture')
+        .authBearer(token)
         .send({ id: id })
         .type('form')
         .end(function (err, res) {
@@ -93,7 +94,7 @@ const openDetails = (id, dispatch) => {
                 let data = res.body;
                 //add dispatch action
                 data.type = 'GET_PIC';
-
+                
                 dispatch(data)
 
                 //comments
@@ -122,8 +123,8 @@ const mapDispatchToProps = (dispatch) => {
         onDislikeClick: (pic, token) => {
             dislikePic(pic, token, dispatch)
         },
-        onOpenClick: (id) =>
-            openDetails(id, dispatch)
+        onOpenClick: (id, token) =>
+            openDetails(id, token, dispatch)
         ,
         onLogout: () => {
             logout(dispatch)

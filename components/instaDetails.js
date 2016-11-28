@@ -3,6 +3,8 @@ import { Link } from 'react-router'
 import { addPic } from '../actions'
 import request from 'superagent'
 
+require('superagent-auth-bearer')(request)
+
 var commentbox;
 var editcommentdiv = []; //untuk dynamic control div
 var editcommentbox = []; //untuk dynamic control textbox
@@ -10,24 +12,10 @@ var commenttext = []; //untuk dynamic control text commentnya
 
 class InstaDetails extends React.Component {
 
-    editComment(id, text) {
-        NProgress.start()
-        request
-            .post('http://localhost:5000/api/comments/update')
-            .send({ id: id, text: text })
-            .type('form')
-            .end(function (err, res) {
-                if (err || !res.ok) {
-                    alert("There's an error while updating comment");
-                } else {
-                    NProgress.done()
-                }
-            });
-    }
 
     componentWillUpdate(nextProps, nextState) {
         let { editcomment } = nextProps
-        let { dispatch } = this.props
+        let { dispatch, login, onEditExecute } = this.props
         if (editcomment.id != undefined) {
             let i = editcommentdiv.findIndex(p => p.id == editcomment.id + '_div')
             let j = commenttext.findIndex(p => p.id == editcomment.id + '_span')
@@ -50,33 +38,21 @@ class InstaDetails extends React.Component {
                     id: editcomment.id,
                     text: editcommentbox[i].value
                 })
-                this.editComment(editcomment.id, editcommentbox[i].value)
+                onEditExecute(editcomment.id, login.accesstoken, editcommentbox[i].value)
             }
         }
     }
     componentWillUnmount() {
-        const { dispatch } = this.props
-        dispatch({ type: 'CLEAR_PICTURES' })
+        const { dispatch, login } = this.props
+      
         dispatch({ type: 'RESET_COMMENT_EDIT' })
         editcommentdiv = []; //untuk dynamic control div
         editcommentbox = []; //untuk dynamic control textbox
         commenttext = [];
-        //load pictures data again to refresh
-        request
-            .get('http://localhost:5000/api/pictures')
-            .end((err, res) => {
-                if (err) {
-                    return;
-                }
-                const data = JSON.parse(res.text);
-                data.map(item => {
-                    var add = addPic(item)
-                    dispatch(add)
-                })
-            })
+      
     }
     render() {
-        const { id, picture, comment, comments, onClick, onLikeClick, onDeleteCommentClick,
+        const { id, picture, comment, comments, login, onClick, onLikeClick, onUnlikeClick, onDeleteCommentClick,
             onEditClick, onCancelEditClick, onSaveCommentClick } = this.props
         var buttonstyle = {
             width: '49.1%'
@@ -86,6 +62,12 @@ class InstaDetails extends React.Component {
         }
         var editstyleblock = {
             display: 'block'
+        }
+          let nolike = {
+            color: 'black'
+        }
+        let withlike = {
+            color: 'red'
         }
         return (
             <div className="x_content">
@@ -105,8 +87,8 @@ class InstaDetails extends React.Component {
                 </div>
                 <div className="row">
                     <div className="col-xs-12 col-md-12">
-                        <p><button onClick={() => onLikeClick(picture)} style={buttonstyle} className="instabtn btn btn-default">
-                            <b>{picture.likes}</b>&nbsp;<span className="glyphicon glyphicon-heart"></span></button>
+                        <p><button onClick={ picture.liked ? () => onUnlikeClick(picture, login.accesstoken) : () => onLikeClick(picture, login.accesstoken)} style={buttonstyle} className="instabtn btn btn-default">
+                            <span style={picture.liked ? withlike : nolike}><b>{picture.likes}</b>&nbsp;<span className="glyphicon glyphicon-heart"></span></span></button>
                             <Link style={buttonstyle} to={{ pathname: '/view', query: { id: 0 } }} className="instabtn btn btn-default">
                                 <b>{picture.comments_amt}   </b>&nbsp;
                                         <span className="glyphicon glyphicon-comment"></span></Link></p>
@@ -120,10 +102,10 @@ class InstaDetails extends React.Component {
                                     <div className="comment-avatar"><img src="http://i9.photobucket.com/albums/a88/creaticode/avatar_1_zps8e1c80cd.jpg" alt=""></img></div>
                                     <div className="comment-box">
                                         <div className="comment-head">
-                                            <h6 className="comment-name by-author"><a href="http://creaticode.com/blog">{item.name}</a></h6>
+                                            <h6 className="comment-name by-author"><a href="#">{item.name}</a></h6>
                                             <span>{item.time}</span>
 
-                                            <i onClick={() => onDeleteCommentClick(item)} className="fa fa-times"></i>
+                                            <i onClick={() => onDeleteCommentClick(item, login.accesstoken)} className="fa fa-times"></i>
                                             <i onClick={() => onEditClick(item)} className="fa fa-pencil"></i>
                                         </div>
                                         <div className="comment-content">
@@ -148,7 +130,7 @@ class InstaDetails extends React.Component {
                             <div className="status-upload">
                                 <textarea ref={node => commentbox = node} placeholder="What are you thinking about this picture?" ></textarea>
 
-                                <button type="submit" onClick={() => onClick(id, commentbox)} className="btn btn-success green"><i className="fa fa-share"></i> Share</button>
+                                <button type="submit" onClick={() => onClick(id, login.fullname, commentbox, login.accesstoken)} className="btn btn-success green"><i className="fa fa-share"></i> Share</button>
 
                             </div>
 

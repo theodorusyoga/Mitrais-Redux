@@ -12,12 +12,14 @@ class Login extends React.Component {
         let expires = cookie.load('expires')
         let username = cookie.load('username')
         let pwd = cookie.load('password')
+        let fullname = cookie.load('fullname')
         if (token != '' && token != undefined) { 
             if (new Date(expires) > new Date()) { //if still valid
                 dispatch({
                     type: 'GET_ACCESSTOKEN',
                     username: username,
                     password: pwd,
+                    fullname: fullname,
                     accesstoken: token,
                     expires: expires
                 })

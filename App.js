@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { combineReducers, createStore } from 'redux';
+import { combineReducers, createStore, compose } from 'redux';
 import { Provider } from 'react-redux';
 import empreducer from './reducers';
 import AddEmp from './containers/AddEmp';
@@ -17,7 +17,11 @@ import Validate from './containers/validate'
 import { syncHistoryWithStore, analyticsService } from 'react-router-redux'
 import request from 'superagent'
 
-const store = createStore(empreducer);
+const enhancers = compose(
+    window.devToolsExtension ? window.devToolsExtension() : f => f
+)
+
+const store = createStore(empreducer, enhancers);
 const history = syncHistoryWithStore(hashHistory, store)
 
 

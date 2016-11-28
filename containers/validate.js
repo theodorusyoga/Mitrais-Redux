@@ -20,12 +20,14 @@ const onLoginClick = (username, pwd, dispatch) => {
                 date.getMinutes(), date.getSeconds() + data.expires_in)
                 cookie.save('username', username)
                 cookie.save('password', pwd)
+                cookie.save('fullname', data.fullname)
                 cookie.save('accesstoken', data.access_token)
                 cookie.save('expires', date)
                 dispatch({
                     type: 'GET_ACCESSTOKEN',
                     username: username,
                     password: pwd,
+                    fullname: data.fullname,
                     accesstoken: data.access_token,
                     expires: data.expires_in
                 })

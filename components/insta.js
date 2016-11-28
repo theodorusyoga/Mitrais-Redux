@@ -18,6 +18,7 @@ class Insta extends React.Component {
     componentDidMount() {
         const { login, dispatch } = this.props
         let accesstoken = login.accesstoken
+          dispatch({ type: 'CLEAR_PICTURES' })
         request
             .get('http://localhost:5000/api/pictures/')
             .authBearer(accesstoken)
@@ -30,10 +31,6 @@ class Insta extends React.Component {
                 let i = 0;
                 dispatch({ type: 'STORE_PICTURES', pictures: data })
             })
-
-
-
-
     }
     render() {
         const { pictures, onLikeClick, onDislikeClick, onOpenClick, onLogout, login } = this.props
@@ -62,7 +59,7 @@ class Insta extends React.Component {
                                     <br />
                                     <p><button onClick={pic.liked ? () => onDislikeClick(pic, login.accesstoken) : () => onLikeClick(pic, login.accesstoken)} href="#" className="instabtn btn btn-default" role="button">
                                         <span style={pic.liked ? withlike : nolike}><b>{pic.likes}</b>&nbsp;<span className="glyphicon glyphicon-heart"></span></span></button>
-                                        <Link onClick={() => onOpenClick(pic.id)} to={{ pathname: '/view', query: { id: pic.id } }} className="instabtn btn btn-default">
+                                        <Link onClick={() => onOpenClick(pic.id, login.accesstoken)} to={{ pathname: '/view', query: { id: pic.id } }} className="instabtn btn btn-default">
                                             <b>{pic.comments_amt}</b>&nbsp;
                                         <span className="glyphicon glyphicon-comment"></span></Link></p>
                                 </div>

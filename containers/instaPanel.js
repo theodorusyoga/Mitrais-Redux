@@ -4,6 +4,8 @@ import request from 'superagent'
 import { addComment } from '../actions'
 import { formatDate } from './datetimeFormatter'
 
+require('superagent-auth-bearer')(request)
+
 const initiateSaveComment = (id, dispatch) => {
     dispatch({ type: 'INITIATE_SAVE_COMMENT', id: id })
 }
@@ -16,7 +18,24 @@ const editComment = (item, dispatch) => {
     dispatch({ type: 'EDIT_COMMENT', id: item.id, text: item.text })
 }
 
-const deleteComment = (item, dispatch) => {
+const onEditComment = (id, token, text) => {
+    NProgress.start()
+    request
+        .post('http://localhost:5000/api/comments/update')
+        .authBearer(token)
+        .send({ id: id, text: text })
+        .type('form')
+        .end(function (err, res) {
+            if (err || !res.ok) {
+                alert("There's an error while updating comment");
+            } else {
+                NProgress.done()
+            }
+        });
+}
+
+
+const deleteComment = (item, token, dispatch) => {
     if (!confirm('Do you want to remove this comment?'))
         return;
     dispatch({
@@ -26,6 +45,7 @@ const deleteComment = (item, dispatch) => {
     })
     request
         .post('http://localhost:5000/api/comments/delete')
+        .authBearer(token)
         .send({ id: item.id })
         .type('form')
         .end(function (err, res) {
@@ -40,10 +60,11 @@ const deleteComment = (item, dispatch) => {
         });
 }
 
-const likePic = (pic, dispatch) => {
+const likePic = (pic, token, dispatch) => {
     request
         .post('http://localhost:5000/api/pictures/like')
-        .send({ id: pic.id })
+        .authBearer(token)
+        .send({ PictureID: pic.id })
         .type('form')
         .end(function (err, res) {
             if (err || !res.ok) {
@@ -68,12 +89,42 @@ const likePic = (pic, dispatch) => {
         });
 }
 
-const onClick = (id, input, dispatch) => {
+const unlikePic = (pic, token, dispatch) => {
+    request
+        .post('http://localhost:5000/api/pictures/unlike')
+        .authBearer(token)
+        .send({ PictureID: pic.id })
+        .type('form')
+        .end(function (err, res) {
+            if (err || !res.ok) {
+                alert("There's an error while liking picture");
+            } else {
+                let data = res.body;
+                //add dispatch action
+                if (data.status == 0) {
+                    dispatch({
+                        type: 'REMOVE_LIKE_PIC', id: pic.id, desc: pic.desc, src: pic.src,
+                        likes: pic.likes, comments_amt: pic.comments_amt
+                    })
+                }
+                else {
+                    alert('There is something wrong.')
+                }
+
+
+
+                NProgress.done();
+            }
+        });
+}
+
+const onClick = (id, author, input, dispatch, token) => {
     NProgress.start();
     request
         .post('http://localhost:5000/api/comments/create')
+        .authBearer(token)
         .send({
-            Name: 'Author',
+            Name: author,
             Text: input.value.trim(),
             PictureID: Number(id),
             Time: formatDate(new Date())
@@ -98,23 +149,30 @@ const mapStateToProps = (state, ownProps) => {
         id: state.routing.locationBeforeTransitions.query.id,
         picture: state.picdetails,
         comments: state.comments,
-        editcomment: state.comment
+        editcomment: state.comment,
+        login: state.login
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onClick: (id, input) =>
-            onClick(id, input, dispatch)
+        onClick: (id, author, input, token) =>
+            onClick(id, author, input, dispatch, token)
         ,
-        onLikeClick: (pic) =>
-            likePic(pic, dispatch)
+        onLikeClick: (pic, token) =>
+            likePic(pic, token, dispatch)
         ,
-        onDeleteCommentClick: (item) =>
-            deleteComment(item, dispatch)
+         onUnlikeClick: (pic, token) =>
+            unlikePic(pic, token, dispatch)
+        ,
+        onDeleteCommentClick: (item, token) =>
+            deleteComment(item, token, dispatch)
         ,
         onEditClick: (item) =>
             editComment(item, dispatch)
+        ,
+        onEditExecute: (item, token, text) =>
+            onEditComment(item, token, text)
         ,
         onCancelEditClick: (item) =>
             cancelEditComment(item, dispatch)
