@@ -94,7 +94,6 @@ const openDetails = (id, token, dispatch) => {
                 let data = res.body;
                 //add dispatch action
                 data.type = 'GET_PIC';
-                
                 dispatch(data)
 
                 //comments
@@ -102,7 +101,7 @@ const openDetails = (id, token, dispatch) => {
                     dispatch({ type: 'GET_COMMENTS', comments: data.comments, comments_amt: data.comments_amt })
                 }
 
-                hashHistory.push('/view/')
+                hashHistory.push('/view/?id=' + id)
 
 
                 NProgress.done();

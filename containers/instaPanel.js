@@ -18,7 +18,7 @@ const editComment = (item, dispatch) => {
     dispatch({ type: 'EDIT_COMMENT', id: item.id, text: item.text })
 }
 
-const onEditComment = (id, token, text) => {
+const onEditComment = (id, token, text, dispatch) => {
     NProgress.start()
     request
         .post('http://localhost:5000/api/comments/update')
@@ -30,6 +30,8 @@ const onEditComment = (id, token, text) => {
                 alert("There's an error while updating comment");
             } else {
                 NProgress.done()
+                console.log('edited')
+                dispatch({ type: 'SHOW_SNACKBAR', message: 'Comment edited' })
             }
         });
 }
@@ -56,6 +58,7 @@ const deleteComment = (item, token, dispatch) => {
                 //add dispatch action
 
                 NProgress.done();
+                dispatch({ type: 'SHOW_SNACKBAR', message: 'Comment deleted' })
             }
         });
 }
@@ -77,6 +80,7 @@ const likePic = (pic, token, dispatch) => {
                         type: 'ADD_LIKE_PIC', id: pic.id, desc: pic.desc, src: pic.src,
                         likes: pic.likes, comments_amt: pic.comments_amt
                     })
+                    dispatch({ type: 'SHOW_SNACKBAR', message: 'You liked this picture' })
                 }
                 else {
                     alert('There is something wrong.')
@@ -106,6 +110,7 @@ const unlikePic = (pic, token, dispatch) => {
                         type: 'REMOVE_LIKE_PIC', id: pic.id, desc: pic.desc, src: pic.src,
                         likes: pic.likes, comments_amt: pic.comments_amt
                     })
+                    dispatch({ type: 'SHOW_SNACKBAR', message: 'You unliked this picture' })
                 }
                 else {
                     alert('There is something wrong.')
@@ -139,6 +144,7 @@ const onClick = (id, author, input, dispatch, token) => {
                 dispatch(disp);
 
                 NProgress.done();
+                dispatch({ type: 'SHOW_SNACKBAR', message: 'Comment posted' })
             }
         });
     input.value = ''
@@ -150,7 +156,8 @@ const mapStateToProps = (state, ownProps) => {
         picture: state.picdetails,
         comments: state.comments,
         editcomment: state.comment,
-        login: state.login
+        login: state.login,
+        snackbar: state.snackbar
     }
 }
 
@@ -162,7 +169,7 @@ const mapDispatchToProps = (dispatch) => {
         onLikeClick: (pic, token) =>
             likePic(pic, token, dispatch)
         ,
-         onUnlikeClick: (pic, token) =>
+        onUnlikeClick: (pic, token) =>
             unlikePic(pic, token, dispatch)
         ,
         onDeleteCommentClick: (item, token) =>
@@ -172,13 +179,17 @@ const mapDispatchToProps = (dispatch) => {
             editComment(item, dispatch)
         ,
         onEditExecute: (item, token, text) =>
-            onEditComment(item, token, text)
+            onEditComment(item, token, text, dispatch)
         ,
         onCancelEditClick: (item) =>
             cancelEditComment(item, dispatch)
         ,
         onSaveCommentClick: (id) =>
             initiateSaveComment(id, dispatch)
+        ,
+        onSnackbarClose: () => {
+            dispatch({ type: 'HIDE_SNACKBAR' })
+        }
         ,
         dispatch
     }

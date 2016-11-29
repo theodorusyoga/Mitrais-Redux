@@ -1,6 +1,10 @@
 import React from 'react'
 import { hashHistory } from 'react-router'
+import AppBar from 'material-ui/AppBar'
+import FlatButton from 'material-ui/FlatButton'
 import cookie from 'react-cookie'
+import TextField from 'material-ui/TextField'
+import { blue500 } from 'material-ui/styles/colors'
 
 var username;
 var password;
@@ -32,6 +36,8 @@ class Login extends React.Component {
 
 
         }
+
+        console.log(username)
     }
     componentWillUpdate(nextProps, nextState) {
         if (nextProps.login.accesstoken != undefined && nextProps.login.accesstoken != '') {
@@ -41,9 +47,19 @@ class Login extends React.Component {
     }
     render() {
         const { onLoginClick } = this.props
+        let underlinestyle = {
+            color: blue500
+        }
         return (
+            <div>
+                <div className="row">
+                    <div className="col sm-12 col-md-12 pull-right">
+                        <AppBar title="LOGIN TO FAKESTAGRAM"
+                            iconElementRight={<FlatButton ><span className="glyphicon glyphicon-log-out"></span>&nbsp;LOG OUT</FlatButton>}></AppBar>
+                    </div>
+                </div>
             <div className="x_panel loginpanel">
-                <div className="logo">login to fakestagram</div>
+           
                 <div className="login-form-1">
                     <form id="login-form" className="text-left">
                         <div className="login-form-main-message"></div>
@@ -51,25 +67,26 @@ class Login extends React.Component {
                             <div className="login-group">
                                 <div className="form-group">
                                     <label htmlFor="lg_username" className="sr-only">Username</label>
-                                    <input ref={node => username = node} type="text" className="form-control" id="lg_username" name="lg_username" placeholder="username" />
+                                    <TextField ref={node => username = node} hintText="Enter your username" underlineStyle={underlinestyle}/>
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="lg_password" className="sr-only">Password</label>
-                                    <input ref={node => password = node} type="password" className="form-control" id="lg_password" name="lg_password" placeholder="password" />
+                                      <TextField ref={node => password = node} hintText="Enter your password" type="password" underlineStyle={underlinestyle}/>
                                 </div>
                                 <div className="form-group login-group-checkbox">
                                     <input type="checkbox" id="lg_remember" name="lg_remember" />
                                     <label htmlFor="lg_remember">remember</label>
                                 </div>
                             </div>
-                            <button onClick={() => onLoginClick(username.value, password.value)} type="button" className="login-button"><i className="fa fa-chevron-right"></i></button>
+                            <button onClick={() => onLoginClick(username.input.value, password.input.value)} type="button" className="login-button"><i className="fa fa-chevron-right"></i></button>
                         </div>
                         <div className="etc-login-form">
                             <p>forgot your password? <a href="#">click here</a></p>
                             <p>new user? <a href="#">create new account</a></p>
                         </div>
                     </form>
-                </div>
+                </div>  
+            </div>
             </div>
         )
     }

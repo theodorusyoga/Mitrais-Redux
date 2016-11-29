@@ -9,6 +9,7 @@ import picdetails from './instadetails'
 import comments from './instacomments'
 import comment from './commentedit'
 import login from './validation'
+import snackbar from './snackbar'
 
 const empreducer = combineReducers({
   emps,
@@ -20,6 +21,7 @@ const empreducer = combineReducers({
   comments,
   comment,
   login,
+  snackbar,
   routing: routerReducer
 })
 
