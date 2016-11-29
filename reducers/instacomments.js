@@ -25,8 +25,9 @@ const comments = (state = [], action) => {
             return action.comments
         case 'ADD_COMMENT':
             return [
-                ...state,
-                comment(undefined, action)
+                 comment(undefined, action),
+                ...state
+               
             ]
         case 'RESET_COMMENT':
             return []

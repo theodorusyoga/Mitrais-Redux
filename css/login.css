@@ -21,11 +21,35 @@ Last change	: 2015/03/27
 /*=== 1. General Structure ===*/
 
 /*=== 2. Anchor Link ===*/
+body{
+  font-family: Raleway, 'Serif';  
+}
+.btn.navbar-btn{
+      width: 100px;
+    height: 35px;
+    padding: 0;
+    color: white !important;
+    font-weight: 700;
+}
+#insta{
+  position: absolute;
+    height: 100%;
+    width: 100%;
+    
+}
 .loginpanel{
   text-align: center;
   font-family: Raleway, 'Serif';
     background: #efefef;
     border: 0.4px solid #dfdfdf;
+    height: 100%;
+        position: absolute;
+    width: 100%;
+    display: table;
+}
+.loginbox {
+    vertical-align: middle;
+    display: table-cell;
 }
 a {
   color: #aaaaaa;
@@ -61,6 +85,7 @@ a:hover {
   padding: 7px 0;
   font-weight: bold;
   height:auto;
+  font-size: 20px;
 }
 .login-form-1 .form-control::-webkit-input-placeholder {
   color: #999999;
@@ -188,6 +213,7 @@ label.form-invalid:after {
   padding-left: 25px;
   padding-top: 1px;
   cursor: pointer;
+  font-size: 20px;
 }
 /* checkbox aspect */
 [type="checkbox"]:not(:checked) + label:before,
@@ -282,7 +308,7 @@ label:hover:before {
 /*=== 9. Misc ===*/
 .logo {
   padding: 15px 0;
-  font-size: 26px;
+  font-size: 38px;
   color: #aaaaaa;
   font-weight: bold;
 }

@@ -3,8 +3,22 @@ import InstaDetails from '../components/instaDetails'
 import request from 'superagent'
 import { addComment } from '../actions'
 import { formatDate } from './datetimeFormatter'
+import cookie from 'react-cookie'
 
 require('superagent-auth-bearer')(request)
+
+const logout = (dispatch) => {
+    if (confirm('Are you sure you want to logout?')) {
+        cookie.remove('username')
+        cookie.remove('password')
+        cookie.remove('accesstoken')
+        cookie.remove('expires')
+        dispatch({ type: 'CLEAR_CREDENTIAL' })
+        dispatch({ type: 'CLEAR_PICTURES' })
+        hashHistory.push('/')
+    }
+
+}
 
 const initiateSaveComment = (id, dispatch) => {
     dispatch({ type: 'INITIATE_SAVE_COMMENT', id: id })
@@ -38,6 +52,7 @@ const onEditComment = (id, token, text) => {
 const deleteComment = (item, token, dispatch) => {
     if (!confirm('Do you want to remove this comment?'))
         return;
+    NProgress.start()
     dispatch({
         type: 'REMOVE_COMMENT', id: item.id,
         name: item.name, pictureid: item.pictureid,
@@ -162,7 +177,7 @@ const mapDispatchToProps = (dispatch) => {
         onLikeClick: (pic, token) =>
             likePic(pic, token, dispatch)
         ,
-         onUnlikeClick: (pic, token) =>
+        onUnlikeClick: (pic, token) =>
             unlikePic(pic, token, dispatch)
         ,
         onDeleteCommentClick: (item, token) =>
@@ -180,6 +195,9 @@ const mapDispatchToProps = (dispatch) => {
         onSaveCommentClick: (id) =>
             initiateSaveComment(id, dispatch)
         ,
+        onLogout: () => {
+            logout(dispatch)
+        },
         dispatch
     }
 }

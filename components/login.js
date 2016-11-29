@@ -42,13 +42,14 @@ class Login extends React.Component {
     render() {
         const { onLoginClick } = this.props
         return (
-            <div className="x_panel loginpanel">
+            <div className="loginpanel">
+            <div className="loginbox">
                 <div className="logo">login to fakestagram</div>
                 <div className="login-form-1">
                     <form id="login-form" className="text-left">
                         <div className="login-form-main-message"></div>
                         <div className="main-login-form">
-                            <div className="login-group">
+                                <div className="login-group">
                                 <div className="form-group">
                                     <label htmlFor="lg_username" className="sr-only">Username</label>
                                     <input ref={node => username = node} type="text" className="form-control" id="lg_username" name="lg_username" placeholder="username" />
@@ -69,6 +70,7 @@ class Login extends React.Component {
                             <p>new user? <a href="#">create new account</a></p>
                         </div>
                     </form>
+                </div>
                 </div>
             </div>
         )
