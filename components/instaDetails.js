@@ -5,6 +5,22 @@ import request from 'superagent'
 
 require('superagent-auth-bearer')(request)
 
+let buttonstyle = {
+    width: '49.1%'
+}
+let editstylenone = {
+    display: 'none'
+}
+let editstyleblock = {
+    display: 'block'
+}
+let nolike = {
+    color: 'black'
+}
+let withlike = {
+    color: 'red'
+}
+
 var commentbox;
 var editcommentdiv = []; //untuk dynamic control div
 var editcommentbox = []; //untuk dynamic control textbox
@@ -20,17 +36,17 @@ class InstaDetails extends React.Component {
             let i = editcommentdiv.findIndex(p => p.id == editcomment.id + '_div')
             let j = commenttext.findIndex(p => p.id == editcomment.id + '_span')
 
-            if (editcomment.type == 'EDIT') {
+            if (editcomment.type == 'EDIT') { //on comment editing
                 editcommentdiv[i].style.display = 'block'
                 editcommentbox[i].value = nextProps.editcomment.text
                 commenttext[j].style.display = 'none'
             }
-            else if (editcomment.type == 'CANCEL') {
+            else if (editcomment.type == 'CANCEL') { //cancel comment editing
                 editcommentdiv[i].style.display = 'none'
                 editcommentbox[i].value = nextProps.editcomment.text
                 commenttext[j].style.display = 'block'
             }
-            else if (editcomment.type == 'SAVE') {
+            else if (editcomment.type == 'SAVE') { //save comment editing
                 editcommentdiv[i].style.display = 'none'
                 commenttext[j].style.display = 'block'
                 dispatch({
@@ -46,29 +62,15 @@ class InstaDetails extends React.Component {
         const { dispatch, login } = this.props
 
         dispatch({ type: 'RESET_COMMENT_EDIT' })
-        editcommentdiv = []; //untuk dynamic control div
-        editcommentbox = []; //untuk dynamic control textbox
+        editcommentdiv = []; 
+        editcommentbox = []; 
         commenttext = [];
 
     }
     render() {
         const { id, picture, comment, comments, login, onClick, onLikeClick, onUnlikeClick, onDeleteCommentClick,
             onEditClick, onCancelEditClick, onSaveCommentClick, onLogout } = this.props
-        var buttonstyle = {
-            width: '49.1%'
-        }
-        var editstylenone = {
-            display: 'none'
-        }
-        var editstyleblock = {
-            display: 'block'
-        }
-        let nolike = {
-            color: 'black'
-        }
-        let withlike = {
-            color: 'red'
-        }
+
         return (
             <div>
                 <nav className="navbar navbar-default">
@@ -88,7 +90,7 @@ class InstaDetails extends React.Component {
 
                         <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul className="nav navbar-nav navbar-right">
-                                <li>  <Link to="/" className="btn btn-primary navbar-btn"><span className="glyphicon glyphicon-circle-arrow-left"></span> Back</Link></li>
+                                <li>  <Link to="/home" className="btn btn-primary navbar-btn"><span className="glyphicon glyphicon-circle-arrow-left"></span> Back</Link></li>
                                 <li><a onClick={() => onLogout()} className="btn btn-danger navbar-btn" href="#"><span className="glyphicon glyphicon-log-out"></span>&nbsp;Log Out</a></li>
                             </ul>
                         </div>

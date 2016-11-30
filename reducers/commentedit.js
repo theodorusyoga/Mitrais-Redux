@@ -1,4 +1,4 @@
-const comment = (state = {
+const editcomment = (state = {
 
 }, action) => {
     switch (action.type) {
@@ -36,4 +36,4 @@ const comment = (state = {
     }
 }
 
-export default comment
+export default editcomment

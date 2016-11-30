@@ -1,47 +1,21 @@
 import React from 'react'
 import { IndexRoute, Router, Route, Link, hashHistory, browserHistory } from 'react-router'
 import { addPic } from '../actions'
-import request from 'superagent'
 
-require('superagent-auth-bearer')(request)
-
+let nolike = {
+    color: 'black'
+}
+let withlike = {
+    color: 'red'
+}
 
 class Insta extends React.Component {
-    bearer(request) {
-        const { login } = this.props
-        // "config" is a global var where token and other stuff resides
-        let accesstoken = login.accesstoken
-        if (accesstoken) {
-            request.set('Authorization', 'Bearer ' + accesstoken)
-        }
-    }
     componentDidMount() {
-        const { login, dispatch } = this.props
-        let accesstoken = login.accesstoken
-        dispatch({ type: 'CLEAR_PICTURES' })
-        NProgress.start()
-        request
-            .get('http://localhost:5000/api/pictures/')
-            .authBearer(accesstoken)
-            .end((err, res) => {
-                if (err) {
-                    hashHistory.push('/')
-                    return;
-                }
-                const data = JSON.parse(res.text);
-                let i = 0;
-                dispatch({ type: 'STORE_PICTURES', pictures: data })
-                 NProgress.done()
-            })
+        const { login, onLoad } = this.props
+        onLoad(login.accesstoken)
     }
     render() {
         const { pictures, onLikeClick, onDislikeClick, onOpenClick, onLogout, login } = this.props
-        let nolike = {
-            color: 'black'
-        }
-        let withlike = {
-            color: 'red'
-        }
         return (
             <div>
                 <nav className="navbar navbar-default">
@@ -60,7 +34,7 @@ class Insta extends React.Component {
 
                         <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul className="nav navbar-nav navbar-right">
-                                <li><a onClick={() => onLogout()}  className="btn btn-danger navbar-btn" href="#"><span className="glyphicon glyphicon-log-out"></span>&nbsp;Log Out</a></li>
+                                <li><a onClick={() => onLogout()} className="btn btn-danger navbar-btn" href="#"><span className="glyphicon glyphicon-log-out"></span>&nbsp;Log Out</a></li>
                             </ul>
                         </div>
                     </div>

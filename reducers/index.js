@@ -4,14 +4,14 @@ import { routerReducer } from 'react-router-redux'
 import pictures from './instareducer'
 import picdetails from './instadetails'
 import comments from './instacomments'
-import comment from './commentedit'
+import editcomment from './commentedit'
 import login from './validation'
 
 const reducers = combineReducers({
   pictures,
   picdetails,
   comments,
-  comment,
+  editcomment,
   login,
   routing: routerReducer
 })

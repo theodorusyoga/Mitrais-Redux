@@ -33,19 +33,20 @@ const editComment = (item, dispatch) => {
 }
 
 const onEditComment = (id, token, text) => {
-    NProgress.start()
-    request
-        .post('http://localhost:5000/api/comments/update')
-        .authBearer(token)
-        .send({ id: id, text: text })
-        .type('form')
-        .end(function (err, res) {
-            if (err || !res.ok) {
-                alert("There's an error while updating comment");
-            } else {
-                NProgress.done()
-            }
-        });
+    // REST API
+    // NProgress.start()
+    // request
+    //     .post('http://localhost:5000/api/comments/update')
+    //     .authBearer(token)
+    //     .send({ id: id, text: text })
+    //     .type('form')
+    //     .end(function (err, res) {
+    //         if (err || !res.ok) {
+    //             alert("There's an error while updating comment");
+    //         } else {
+    //             NProgress.done()
+    //         }
+    //     });
 }
 
 
@@ -58,105 +59,119 @@ const deleteComment = (item, token, dispatch) => {
         name: item.name, pictureid: item.pictureid,
         time: item.time
     })
-    request
-        .post('http://localhost:5000/api/comments/delete')
-        .authBearer(token)
-        .send({ id: item.id })
-        .type('form')
-        .end(function (err, res) {
-            if (err || !res.ok) {
-                alert("There's an error while deleting comment");
-            } else {
-                let data = res.body;
-                //add dispatch action
 
-                NProgress.done();
-            }
-        });
+    //REST API
+    // request
+    //     .post('http://localhost:5000/api/comments/delete')
+    //     .authBearer(token)
+    //     .send({ id: item.id })
+    //     .type('form')
+    //     .end(function (err, res) {
+    //         if (err || !res.ok) {
+    //             alert("There's an error while deleting comment");
+    //         } else {
+    //             let data = res.body;
+    //             //add dispatch action
+
+    //             NProgress.done();
+    //         }
+    //     });
 }
 
 const likePic = (pic, token, dispatch) => {
-    request
-        .post('http://localhost:5000/api/pictures/like')
-        .authBearer(token)
-        .send({ PictureID: pic.id })
-        .type('form')
-        .end(function (err, res) {
-            if (err || !res.ok) {
-                alert("There's an error while liking picture");
-            } else {
-                let data = res.body;
-                //add dispatch action
-                if (data.status == 0) {
-                    dispatch({
-                        type: 'ADD_LIKE_PIC', id: pic.id, desc: pic.desc, src: pic.src,
-                        likes: pic.likes, comments_amt: pic.comments_amt
-                    })
-                }
-                else {
-                    alert('There is something wrong.')
-                }
+    dispatch({
+        type: 'ADD_LIKE_PIC', id: pic.id, desc: pic.desc, src: pic.src,
+        likes: pic.likes, comments_amt: pic.comments_amt
+    })
+
+    //REST API
+    // request
+    //     .post('http://localhost:5000/api/pictures/like')
+    //     .authBearer(token)
+    //     .send({ PictureID: pic.id })
+    //     .type('form')
+    //     .end(function (err, res) {
+    //         if (err || !res.ok) {
+    //             alert("There's an error while liking picture");
+    //         } else {
+    //             let data = res.body;
+    //             //add dispatch action
+    //             if (data.status == 0) {
+
+    //             }
+    //             else {
+    //                 alert('There is something wrong.')
+    //             }
 
 
 
-                NProgress.done();
-            }
-        });
+    //             NProgress.done();
+    //         }
+    //     });
 }
 
 const unlikePic = (pic, token, dispatch) => {
-    request
-        .post('http://localhost:5000/api/pictures/unlike')
-        .authBearer(token)
-        .send({ PictureID: pic.id })
-        .type('form')
-        .end(function (err, res) {
-            if (err || !res.ok) {
-                alert("There's an error while liking picture");
-            } else {
-                let data = res.body;
-                //add dispatch action
-                if (data.status == 0) {
-                    dispatch({
-                        type: 'REMOVE_LIKE_PIC', id: pic.id, desc: pic.desc, src: pic.src,
-                        likes: pic.likes, comments_amt: pic.comments_amt
-                    })
-                }
-                else {
-                    alert('There is something wrong.')
-                }
+    dispatch({
+        type: 'REMOVE_LIKE_PIC', id: pic.id, desc: pic.desc, src: pic.src,
+        likes: pic.likes, comments_amt: pic.comments_amt
+    })
+    //REST API
+    // request
+    //     .post('http://localhost:5000/api/pictures/unlike')
+    //     .authBearer(token)
+    //     .send({ PictureID: pic.id })
+    //     .type('form')
+    //     .end(function (err, res) {
+    //         if (err || !res.ok) {
+    //             alert("There's an error while liking picture");
+    //         } else {
+    //             let data = res.body;
+    //             //add dispatch action
+    //             if (data.status == 0) {
+
+    //             }
+    //             else {
+    //                 alert('There is something wrong.')
+    //             }
 
 
 
-                NProgress.done();
-            }
-        });
+    //             NProgress.done();
+    //         }
+    //     });
 }
 
 const onClick = (id, author, input, dispatch, token) => {
-    NProgress.start();
-    request
-        .post('http://localhost:5000/api/comments/create')
-        .authBearer(token)
-        .send({
-            Name: author,
-            Text: input.value.trim(),
-            PictureID: Number(id),
-            Time: formatDate(new Date())
-        })
-        .type('form')
-        .end(function (err, res) {
-            if (err || !res.ok) {
-                alert("There's an error while posting comment");
-            } else {
-                let data = res.body;
-                let disp = addComment(data)
-                dispatch(disp);
-
-                NProgress.done();
-            }
-        });
+    let data = {
+        id: id,
+        text: input.value.trim(),
+        name: author,
+        time: formatDate(new Date)
+    }
+    let disp = addComment(data)
+    dispatch(disp);
     input.value = ''
+
+    // REST API
+    // NProgress.start();
+    // request
+    //     .post('http://localhost:5000/api/comments/create')
+    //     .authBearer(token)
+    //     .send({
+    //         Name: author,
+    //         Text: input.value.trim(),
+    //         PictureID: Number(id),
+    //         Time: formatDate(new Date())
+    //     })
+    //     .type('form')
+    //     .end(function (err, res) {
+    //         if (err || !res.ok) {
+    //             alert("There's an error while posting comment");
+    //         } else {
+    //             NProgress.done();
+    //         }
+    //     });
+
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -164,7 +179,7 @@ const mapStateToProps = (state, ownProps) => {
         id: state.routing.locationBeforeTransitions.query.id,
         picture: state.picdetails,
         comments: state.comments,
-        editcomment: state.comment,
+        editcomment: state.editcomment,
         login: state.login
     }
 }

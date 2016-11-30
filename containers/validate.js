@@ -2,38 +2,101 @@ import { connect } from 'react-redux'
 import Login from '../components/login'
 import request from 'superagent'
 import cookie from 'react-cookie'
+import { hashHistory } from 'react-router'
+
 
 const onLoginClick = (username, pwd, dispatch) => {
     NProgress.start();
+
+    //get users local data
     request
-        .post('http://localhost:5000/token')
-        .send({ username: username, password: pwd })
-        .type('form')
-        .end((err, res) => {
-            if (err || !res.ok) {
-                alert(res.text)
-            }
-            else {
-                var data = JSON.parse(res.text)
-                var date = new Date();
-                date.setHours(date.getHours(), 
-                date.getMinutes(), date.getSeconds() + data.expires_in)
+        .get('../json/users.json')
+        .end((end, res) => {
+            var data = JSON.parse(res.text)
+            var i = data.findIndex(p => p.username == username && p.password == pwd)
+            if (i != -1) { //if found
                 cookie.save('username', username)
                 cookie.save('password', pwd)
-                cookie.save('fullname', data.fullname)
-                cookie.save('accesstoken', data.access_token)
-                cookie.save('expires', date)
+                cookie.save('fullname', 'Dummy User')
+                cookie.save('accesstoken', '')
+                cookie.save('expires', 0)
                 dispatch({
                     type: 'GET_ACCESSTOKEN',
                     username: username,
                     password: pwd,
-                    fullname: data.fullname,
-                    accesstoken: data.access_token,
-                    expires: data.expires_in
+                    fullname: 'Dummy User',
+                    accesstoken: '',
+                    expires: 0
                 })
-
+                NProgress.done()
+                hashHistory.push('/home')
             }
+
         })
+
+    // REST API section
+
+    // request
+    //     .post('http://localhost:5000/token')
+    //     .send({ username: username, password: pwd })
+    //     .type('form')
+    //     .end((err, res) => {
+    //         if (err || !res.ok) {
+    //             alert(res.text)
+    //         }
+    //         else {
+    //             var data = JSON.parse(res.text)
+    //             var date = new Date();
+    //             date.setHours(date.getHours(),
+    //                 date.getMinutes(), date.getSeconds() + data.expires_in)
+    //             cookie.save('username', username)
+    //             cookie.save('password', pwd)
+    //             cookie.save('fullname', data.fullname)
+    //             cookie.save('accesstoken', data.access_token)
+    //             cookie.save('expires', date)
+    //             dispatch({
+    //                 type: 'GET_ACCESSTOKEN',
+    //                 username: username,
+    //                 password: pwd,
+    //                 fullname: data.fullname,
+    //                 accesstoken: data.access_token,
+    //                 expires: data.expires_in
+    //             })
+    //             NProgress.done()
+    //             hashHistory.push('/home')
+
+    //         }
+    //     })
+
+    //end of REST API
+}
+
+const load = (dispatch) => {
+
+    let token = cookie.load('accesstoken')
+    let expires = cookie.load('expires')
+    let username = cookie.load('username')
+    let pwd = cookie.load('password')
+    let fullname = cookie.load('fullname')
+    //UNCOMMENT THIS CONDITION IF USING REST API
+   // if (token != '' && token != undefined) {
+        if (new Date(expires) > new Date()) { //if still valid
+            dispatch({
+                type: 'GET_ACCESSTOKEN',
+                username: username,
+                password: pwd,
+                fullname: fullname,
+                accesstoken: token,
+                expires: expires
+            })
+            hashHistory.push('/home')
+        }
+        else { //if expired
+            onLoginClick(username, pwd, dispatch);
+        }
+
+
+  //  }
 }
 
 const mapStateToProps = (state) => {
@@ -46,6 +109,8 @@ const mapDispatchToProps = (dispatch) => {
     return {
         onLoginClick: (username, pwd) =>
             onLoginClick(username, pwd, dispatch),
+        onLoad: () =>
+            load(dispatch),
         dispatch
     }
 }
