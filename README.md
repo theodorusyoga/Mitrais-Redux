@@ -35,5 +35,5 @@ Make sure to install packages in NPM using `npm install`.
 
 ## Contributors
 
-Please let me know if there is any issue to this example codes. Have fun exploring React and Redux! :)
+Please let me know by email or Lync if there is any issue to this example codes. Have fun exploring React and Redux! :)
 
