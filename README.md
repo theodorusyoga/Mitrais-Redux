@@ -1,6 +1,8 @@
 ## Synopsis
 
-What is this? This is an example project using ReactJS and Redux to create an Instagram-like features. Users can login using username: <b>test</b> and password: <b>test</b> for a demo.
+What is this? This is an example project using ReactJS and Redux to create an Instagram-like features. Users can login using this credentials for a demo:
+ `Username: <b>test</b>`
+  `Password: <b>test</b>` 
 This project does not require you to install third-party API, such as REST API, to get it working. Instead, it uses <a href="https://github.com/jvilk/BrowserFS">BrowserFS</a> to store the data from local JSON file.
 All the changes, such as creating comments, adding likes, etc., have been made in the application will be kept only in <b>local environment</b> (What do you expect from BrowserFS :D)
 
