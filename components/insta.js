@@ -15,7 +15,7 @@ class Insta extends React.Component {
         onLoad(login.accesstoken)
     }
     render() {
-        const { pictures, onLikeClick, onDislikeClick, onOpenClick, onLogout, login } = this.props
+        const { pictures, onLikeClick, onDislikeClick, onLogout, login } = this.props
         return (
             <div>
                 <nav className="navbar navbar-default">
@@ -52,7 +52,7 @@ class Insta extends React.Component {
                                         <br />
                                         <p><button onClick={pic.liked ? () => onDislikeClick(pic, login.accesstoken) : () => onLikeClick(pic, login.accesstoken)} href="#" className="instabtn btn btn-default" role="button">
                                             <span style={pic.liked ? withlike : nolike}><b>{pic.likes}</b>&nbsp;<span className="glyphicon glyphicon-heart"></span></span></button>
-                                            <Link onClick={() => onOpenClick(pic.id, login.accesstoken)} to={{ pathname: '/view', query: { id: pic.id } }} className="instabtn btn btn-default">
+                                            <Link to={{ pathname: '/view', query: { id: pic.id } }} className="instabtn btn btn-default">
                                                 <b>{pic.comments_amt}</b>&nbsp;
                                         <span className="glyphicon glyphicon-comment"></span></Link></p>
                                     </div>
@@ -76,7 +76,6 @@ Insta.propTypes = {
         likes: React.PropTypes.number.isRequired,
         comments_amt: React.PropTypes.number.isRequired
     }).isRequired).isRequired,
-    onOpenClick: React.PropTypes.func.isRequired,
     onLikeClick: React.PropTypes.func.isRequired,
     dispatch: React.PropTypes.func.isRequired
 };

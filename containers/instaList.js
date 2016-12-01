@@ -3,6 +3,7 @@ import Insta from '../components/insta'
 import request from 'superagent'
 import cookie from 'react-cookie'
 import { hashHistory } from 'react-router'
+import fs from 'fs'
 
 require('superagent-auth-bearer')(request)
 
@@ -22,10 +23,21 @@ const logout = (dispatch) => {
 
 const dislikePic = (pic, token, dispatch) => {
 
-      dispatch({
-                        type: 'REMOVE_LIKE', id: pic.id, desc: pic.desc, src: pic.src,
-                        likes: pic.likes, comments_amt: pic.comments_amt
-                    })
+    dispatch({
+        type: 'REMOVE_LIKE', id: pic.id, desc: pic.desc, src: pic.src,
+        likes: pic.likes, comments_amt: pic.comments_amt
+    })
+
+    //browserFS
+    fs.readFile('/pictures.json', (err, content) => {
+        if (!err) {
+            var data = JSON.parse(content)
+            var i = data.findIndex(p => p.id == pic.id)
+            data[i].likes -= 1
+            data[i].liked = false
+            fs.writeFile('/pictures.json', JSON.stringify(data))
+        }
+    })
     // REST API
     // request
     //     .post('http://localhost:5000/api/pictures/unlike')
@@ -39,7 +51,7 @@ const dislikePic = (pic, token, dispatch) => {
     //             let data = res.body;
     //             //add dispatch action
     //             if (data.status == 0) {
-                  
+
     //             }
     //             else {
     //                 alert('There is something wrong.')
@@ -47,15 +59,24 @@ const dislikePic = (pic, token, dispatch) => {
     //             NProgress.done();
     //         }
     //     });
-
-
 }
 
 const likePic = (pic, token, dispatch) => {
- dispatch({
-                        type: 'ADD_LIKE', id: pic.id, desc: pic.desc, src: pic.src,
-                        likes: pic.likes, comments_amt: pic.comments_amt
-                    })
+    dispatch({
+        type: 'ADD_LIKE', id: pic.id, desc: pic.desc, src: pic.src,
+        likes: pic.likes, comments_amt: pic.comments_amt
+    })
+
+    //browserFS
+    fs.readFile('/pictures.json', (err, content) => {
+        if (!err) {
+            var data = JSON.parse(content)
+            var i = data.findIndex(p => p.id == pic.id)
+            data[i].likes += 1
+            data[i].liked = true
+            fs.writeFile('/pictures.json', JSON.stringify(data))
+        }
+    })
 
     //REST API
     // request
@@ -70,7 +91,7 @@ const likePic = (pic, token, dispatch) => {
     //             let data = res.body;
     //             //add dispatch action
     //             if (data.status == 0) {
-                   
+
     //             }
     //             else {
     //                 alert('There is something wrong.')
@@ -83,68 +104,28 @@ const likePic = (pic, token, dispatch) => {
     //     });
 }
 
-const openDetails = (id, token, dispatch) => {
-    dispatch({ type: 'CLEAR_PIC' })
-    dispatch({ type: 'RESET_COMMENT' })
-    NProgress.start();
-
- request
-    .get('../json/pictures.json')
-    .end((err, res) => {
-        var data = JSON.parse(res.text)
-        let i = data.findIndex(p => p.id == id)
-        var pic = data[i]
-        pic.type = 'GET_PIC'
-        dispatch(pic)
-
-         NProgress.done()
-    })
-
-    request
-    .get('../json/comments.json')
-    .end((err, res) => {
-        var data = JSON.parse(res.text)
-        let comments = data.filter(p => p.pictureid == id)
-        dispatch({type: 'GET_COMMENTS', comments: comments, comments_amt: comments.length})
-    })
-    //REST API
-    // request
-    //     .post('http://localhost:5000/api/picture')
-    //     .authBearer(token)
-    //     .send({ id: id })
-    //     .type('form')
-    //     .end(function (err, res) {
-    //         if (err || !res.ok) {
-    //             alert("There's an error while loading picture");
-    //         } else {
-    //             let data = res.body;
-    //             //add dispatch action
-    //             data.type = 'GET_PIC';
-
-    //             dispatch(data)
-
-    //             //comments
-    //             if (data.comments_amt > 0) {
-    //                 dispatch({ type: 'GET_COMMENTS', comments: data.comments, comments_amt: data.comments_amt })
-    //             }
-
-
-    //             NProgress.done();
-    //         }
-    //     });
-}
-
 const load = (token, dispatch) => {
     dispatch({ type: 'CLEAR_PICTURES' })
     NProgress.start()
 
-//get local data
-    request
-    .get('../json/pictures.json')
-    .end((err, res) => {
-        var data = JSON.parse(res.text)
-         dispatch({ type: 'STORE_PICTURES', pictures: data })
-         NProgress.done()
+    //populate from local file
+    fs.readFile('/pictures.json', (err, content) => {
+        if (err) {
+            request
+                .get('../json/pictures.json')
+                .end((err, res) => {
+                    fs.writeFile('/pictures.json', res.text)
+                    var data = JSON.parse(res.text)
+
+                    dispatch({ type: 'STORE_PICTURES', pictures: data })
+                    NProgress.done()
+                })
+        }
+        else {
+            var data = JSON.parse(content)
+            dispatch({ type: 'STORE_PICTURES', pictures: data })
+            NProgress.done()
+        }
     })
 
     // REST API section
@@ -179,9 +160,6 @@ const mapDispatchToProps = (dispatch) => {
         onDislikeClick: (pic, token) => {
             dislikePic(pic, token, dispatch)
         },
-        onOpenClick: (id, token) =>
-            openDetails(id, token, dispatch)
-        ,
         onLogout: () => {
             logout(dispatch)
         },

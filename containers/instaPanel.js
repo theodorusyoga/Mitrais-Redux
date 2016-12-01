@@ -4,8 +4,11 @@ import request from 'superagent'
 import { addComment } from '../actions'
 import { formatDate } from './datetimeFormatter'
 import cookie from 'react-cookie'
+import fs from 'fs'
 
 require('superagent-auth-bearer')(request)
+
+var commentindex;
 
 const logout = (dispatch) => {
     if (confirm('Are you sure you want to logout?')) {
@@ -33,6 +36,15 @@ const editComment = (item, dispatch) => {
 }
 
 const onEditComment = (id, token, text) => {
+
+    //browserFS
+    fs.readFile('/comments.json', (err, content) => {
+        var data = JSON.parse(content.toString())
+        var index = data.findIndex(p => p.id == id)
+        data[index].text = text
+        fs.writeFile('/comments.json', JSON.stringify(data))
+    })
+
     // REST API
     // NProgress.start()
     // request
@@ -60,6 +72,26 @@ const deleteComment = (item, token, dispatch) => {
         time: item.time
     })
 
+    fs.readFile('/comments.json', (err, content) => {
+        var data = JSON.parse(content.toString())
+        var index = data.findIndex(p => p.id == item.id)
+        var newdata = [
+            ...data.slice(0, index),
+            ...data.slice(index + 1)
+        ]
+        fs.writeFile('/comments.json', JSON.stringify(newdata))
+    })
+
+    //decrease amount of comment by 1
+    fs.readFile('/pictures.json', (err, content) => {
+        var data = JSON.parse(content.toString())
+        var index = data.findIndex(p => p.id == item.pictureid)
+        data[index].comments_amt -= 1
+        fs.writeFile('/pictures.json', JSON.stringify(data))
+    })
+
+    Nprogress.done()
+
     //REST API
     // request
     //     .post('http://localhost:5000/api/comments/delete')
@@ -82,6 +114,17 @@ const likePic = (pic, token, dispatch) => {
     dispatch({
         type: 'ADD_LIKE_PIC', id: pic.id, desc: pic.desc, src: pic.src,
         likes: pic.likes, comments_amt: pic.comments_amt
+    })
+
+    //browserFS
+    fs.readFile('/pictures.json', (err, content) => {
+        if (!err) {
+            var data = JSON.parse(content)
+            var i = data.findIndex(p => p.id == pic.id)
+            data[i].likes += 1
+            data[i].liked = true
+            fs.writeFile('/pictures.json', JSON.stringify(data))
+        }
     })
 
     //REST API
@@ -115,6 +158,17 @@ const unlikePic = (pic, token, dispatch) => {
         type: 'REMOVE_LIKE_PIC', id: pic.id, desc: pic.desc, src: pic.src,
         likes: pic.likes, comments_amt: pic.comments_amt
     })
+
+    //browserFS
+    fs.readFile('/pictures.json', (err, content) => {
+        if (!err) {
+            var data = JSON.parse(content)
+            var i = data.findIndex(p => p.id == pic.id)
+            data[i].likes -= 1
+            data[i].liked = false
+            fs.writeFile('/pictures.json', JSON.stringify(data))
+        }
+    })
     //REST API
     // request
     //     .post('http://localhost:5000/api/pictures/unlike')
@@ -133,9 +187,6 @@ const unlikePic = (pic, token, dispatch) => {
     //             else {
     //                 alert('There is something wrong.')
     //             }
-
-
-
     //             NProgress.done();
     //         }
     //     });
@@ -150,6 +201,31 @@ const onClick = (id, author, input, dispatch, token) => {
     }
     let disp = addComment(data)
     dispatch(disp);
+
+    fs.readFile('/comments.json', (err, content) => {
+        var data = JSON.parse(content.toString())
+        var newdata = {
+            id: commentindex + 1,
+            name: author,
+            text: input.value.trim(),
+            pictureid: id,
+            time: formatDate(new Date())
+        }
+        var newdata = [
+            ...data,
+            newdata
+        ]
+        fs.writeFile('/comments.json', JSON.stringify(newdata))
+    })
+
+    //increase amount of comment by 1
+    fs.readFile('/pictures.json', (err, content) => {
+        var data = JSON.parse(content.toString())
+        var index = data.findIndex(p => p.id == id)
+        data[index].comments_amt += 1
+        fs.writeFile('/pictures.json', JSON.stringify(data))
+    })
+
     input.value = ''
 
     // REST API
@@ -174,6 +250,79 @@ const onClick = (id, author, input, dispatch, token) => {
 
 }
 
+const load = (id, token, dispatch) => {
+    dispatch({ type: 'CLEAR_PIC' })
+    dispatch({ type: 'RESET_COMMENT' })
+    NProgress.start();
+
+    //read local file for pictures
+
+    fs.readFile('/pictures.json', (err, content) => {
+        if (!err) {
+            var data = JSON.parse(content)
+            let i = data.findIndex(p => p.id == id)
+            var pic = data[i]
+            pic.type = 'GET_PIC'
+            dispatch(pic)
+
+            NProgress.done()
+        }
+    })
+
+    //read local file for comments
+    fs.readFile('/comments.json', (err, content) => {
+        if (err) {
+            request
+                .get('../json/comments.json')
+                .end((err, res) => {
+                    fs.writeFile('/comments.json', res.text, (err) => {
+                        if (!err) {
+                            fs.readFile('/comments.json', (err, content) => {
+                                var data = JSON.parse(content.toString())
+                                let comments = data.filter(p => p.pictureid == id)
+                                
+                                dispatch({ type: 'GET_COMMENTS', comments: comments, comments_amt: comments.length })
+                            })
+                        }
+                    })
+                })
+        }
+        else {
+            var data = JSON.parse(content.toString())
+            commentindex = data[data.length - 1].id
+            let comments = data.filter(p => p.pictureid == id)
+            dispatch({ type: 'GET_COMMENTS', comments: comments, comments_amt: comments.length })
+        }
+    })
+
+
+    //REST API
+    // request
+    //     .post('http://localhost:5000/api/picture')
+    //     .authBearer(token)
+    //     .send({ id: id })
+    //     .type('form')
+    //     .end(function (err, res) {
+    //         if (err || !res.ok) {
+    //             alert("There's an error while loading picture");
+    //         } else {
+    //             let data = res.body;
+    //             //add dispatch action
+    //             data.type = 'GET_PIC';
+
+    //             dispatch(data)
+
+    //             //comments
+    //             if (data.comments_amt > 0) {
+    //                 dispatch({ type: 'GET_COMMENTS', comments: data.comments, comments_amt: data.comments_amt })
+    //             }
+
+
+    //             NProgress.done();
+    //         }
+    //     });
+}
+
 const mapStateToProps = (state, ownProps) => {
     return {
         id: state.routing.locationBeforeTransitions.query.id,
@@ -186,6 +335,9 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        onLoad: (id, token) =>
+            load(id, token, dispatch)
+        ,
         onClick: (id, author, input, token) =>
             onClick(id, author, input, dispatch, token)
         ,

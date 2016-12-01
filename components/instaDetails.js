@@ -28,7 +28,10 @@ var commenttext = []; //untuk dynamic control text commentnya
 
 class InstaDetails extends React.Component {
 
-
+    componentDidMount() {
+        let { id, login, onLoad } = this.props
+        onLoad(id, login.accesstoken)
+    }
     componentWillUpdate(nextProps, nextState) {
         let { editcomment } = nextProps
         let { dispatch, login, onEditExecute } = this.props
@@ -62,15 +65,15 @@ class InstaDetails extends React.Component {
         const { dispatch, login } = this.props
 
         dispatch({ type: 'RESET_COMMENT_EDIT' })
-        editcommentdiv = []; 
-        editcommentbox = []; 
+        editcommentdiv = [];
+        editcommentbox = [];
         commenttext = [];
 
     }
     render() {
-        const { id, picture, comment, comments, login, onClick, onLikeClick, onUnlikeClick, onDeleteCommentClick,
+        const { picture, comment, comments, login, onClick, onLikeClick, onUnlikeClick, onDeleteCommentClick,
             onEditClick, onCancelEditClick, onSaveCommentClick, onLogout } = this.props
-
+        const { id } = picture
         return (
             <div>
                 <nav className="navbar navbar-default">
@@ -119,22 +122,7 @@ class InstaDetails extends React.Component {
                         </div>
                         <div className="col-xs-0 col-md-2">&nbsp;</div>
                     </div>
-                    <div className="row">
-                        <div className="col-xs-0 col-md-2">&nbsp;</div>
-                        <div className="col-xs-12 col-md-8">
-                            <div className="widget-area no-padding blank">
 
-                                <div className="status-upload">
-                                    <textarea ref={node => commentbox = node} placeholder="What are you thinking about this picture?" ></textarea>
-
-                                    <button type="submit" onClick={() => onClick(id, login.fullname, commentbox, login.accesstoken)} className="btn btn-success green"><i className="fa fa-share"></i> Share</button>
-
-                                </div>
-
-                            </div>
-                        </div>
-                        <div className="col-xs-0 col-md-2">&nbsp;</div>
-                    </div>
                     <div className="row">
                         <div className="col-xs-0 col-md-2">&nbsp;</div>
                         <div className="col-xs-12 col-md-8">
@@ -167,7 +155,22 @@ class InstaDetails extends React.Component {
                         </div>
                         <div className="col-xs-0 col-md-2">&nbsp;</div>
                     </div>
+                    <div className="row">
+                        <div className="col-xs-0 col-md-2">&nbsp;</div>
+                        <div className="col-xs-12 col-md-8">
+                            <div className="widget-area no-padding blank">
 
+                                <div className="status-upload">
+                                    <textarea ref={node => commentbox = node} placeholder="What are you thinking about this picture?" ></textarea>
+
+                                    <button type="submit" onClick={() => onClick(id, login.fullname, commentbox, login.accesstoken)} className="btn btn-success green"><i className="fa fa-share"></i> Share</button>
+
+                                </div>
+
+                            </div>
+                        </div>
+                        <div className="col-xs-0 col-md-2">&nbsp;</div>
+                    </div>
 
                 </div>
             </div>
@@ -177,13 +180,6 @@ class InstaDetails extends React.Component {
 
 InstaDetails.propTypes = {
     id: React.PropTypes.string.isRequired,
-    picture: React.PropTypes.shape({
-        id: React.PropTypes.number.isRequired,
-        src: React.PropTypes.string.isRequired,
-        desc: React.PropTypes.string.isRequired,
-        likes: React.PropTypes.number.isRequired,
-        comments_amt: React.PropTypes.number.isRequired
-    }),
     comments: React.PropTypes.arrayOf(React.PropTypes.shape({
         id: React.PropTypes.number.isRequired,
         time: React.PropTypes.string.isRequired,

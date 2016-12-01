@@ -3,36 +3,42 @@ import Login from '../components/login'
 import request from 'superagent'
 import cookie from 'react-cookie'
 import { hashHistory } from 'react-router'
+import fs from 'fs'
 
+
+var lsfs = new BrowserFS.FileSystem.LocalStorage();
+BrowserFS.initialize(lsfs);
+BrowserFS.install(window);
 
 const onLoginClick = (username, pwd, dispatch) => {
     NProgress.start();
 
     //get users local data
-    request
-        .get('../json/users.json')
-        .end((end, res) => {
-            var data = JSON.parse(res.text)
-            var i = data.findIndex(p => p.username == username && p.password == pwd)
-            if (i != -1) { //if found
-                cookie.save('username', username)
-                cookie.save('password', pwd)
-                cookie.save('fullname', 'Dummy User')
-                cookie.save('accesstoken', '')
-                cookie.save('expires', 0)
-                dispatch({
-                    type: 'GET_ACCESSTOKEN',
-                    username: username,
-                    password: pwd,
-                    fullname: 'Dummy User',
-                    accesstoken: '',
-                    expires: 0
-                })
-                NProgress.done()
-                hashHistory.push('/home')
-            }
 
-        })
+    fs.readFile('/users.json', (err, contents) => {
+        var data = JSON.parse(contents)
+        var i = data.findIndex(p => p.username == username && p.password == pwd)
+        if (i != -1) { //if found
+            cookie.save('username', username)
+            cookie.save('password', pwd)
+            cookie.save('fullname', 'Dummy User')
+            cookie.save('accesstoken', '')
+            cookie.save('expires', 0)
+            dispatch({
+                type: 'GET_ACCESSTOKEN',
+                username: username,
+                password: pwd,
+                fullname: 'Dummy User',
+                accesstoken: '',
+                expires: 0
+            })
+            NProgress.done()
+            hashHistory.push('/home')
+        }
+        else {
+            alert('Invalid username or password!')
+        }
+    })
 
     // REST API section
 
@@ -73,13 +79,25 @@ const onLoginClick = (username, pwd, dispatch) => {
 
 const load = (dispatch) => {
 
+    //populate browserFS from local file first
+    fs.readFile('/users.json', (err, contents) => {
+        if (err) {
+            request
+                .get('../json/users.json')
+                .end((end, res) => {
+                    fs.writeFile('/users.json', res.text)
+                })
+        }
+    })
+
     let token = cookie.load('accesstoken')
     let expires = cookie.load('expires')
     let username = cookie.load('username')
     let pwd = cookie.load('password')
     let fullname = cookie.load('fullname')
     //UNCOMMENT THIS CONDITION IF USING REST API
-   // if (token != '' && token != undefined) {
+    // if (token != '' && token != undefined) {
+    if (expires != null) {
         if (new Date(expires) > new Date()) { //if still valid
             dispatch({
                 type: 'GET_ACCESSTOKEN',
@@ -94,9 +112,11 @@ const load = (dispatch) => {
         else { //if expired
             onLoginClick(username, pwd, dispatch);
         }
+    }
 
 
-  //  }
+
+    //  }
 }
 
 const mapStateToProps = (state) => {
