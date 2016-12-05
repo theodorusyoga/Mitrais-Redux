@@ -18,7 +18,7 @@ if(process.env.NODE_ENV !== 'production') {
 app.use(express.static(path.join(__dirname, 'dist')));
 
 app.get('/', function(request, response) {
-  response.sendFile(__dirname + '/index.js')
+  response.sendFile(__dirname + '/index.html')
 });
 
 app.listen(PORT, function(error) {
