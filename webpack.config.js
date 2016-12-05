@@ -2,7 +2,7 @@ var webpack = require("webpack");
 var path = require('path');
 
 module.exports = {
-    devtool: 'eval-source-map',
+    devtool: 'source-map',
     entry: './main.js',
     output:
     {
@@ -11,7 +11,7 @@ module.exports = {
     },
     devServer: {
         inline: true,
-        port: 8080
+        port: 5000
     },
     module:
     {
@@ -29,7 +29,7 @@ module.exports = {
     //browserFS
     resolve: {
         // Use our versions of Node modules.
-          root: path.resolve(__dirname),
+        root: path.resolve(__dirname),
         alias: {
             'fs': 'browserfs/dist/shims/fs.js',
             'buffer': 'browserfs/dist/shims/buffer.js',
