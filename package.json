@@ -32,7 +32,7 @@
   "scripts": {
     "webpack:deploy": "webpack --config=webpack/webpack.prod.config.js -p",
     "build": "webpack -p --config ./webpack.prod.config.js --progress --colors",
-	"start" : "node App.js"
+	"start" : "webpack-dev-server"
   },
   "author": "",
   "license": "ISC"
