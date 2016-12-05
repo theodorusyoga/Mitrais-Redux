@@ -28,7 +28,8 @@
     "redux-devtools": "^3.3.1"
   },
   "scripts": {
-    "heroku-postbuild": "webpack -p --config ./webpack.prod.config.js --progress"
+    "heroku-postbuild": "webpack -p --config ./webpack.prod.config.js --progress",
+	"start": "node Main.js"
   },
   "author": "",
   "license": "ISC"
