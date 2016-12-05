@@ -1,0 +1,42 @@
+[
+    {
+        "id": 1,
+        "src": "/images/photo1.jpg",
+        "desc": "Our flower bouquets! Check them out #flowers #bouquets",
+        "likes": 37,
+        "comments_amt": 2,
+        "liked": false
+    },
+    {
+        "id": 3,
+        "src": "/images/photo3.jpg",
+        "desc": "Big city wooo! #landscape",
+        "likes": 106,
+        "comments_amt": 4,
+        "liked": false
+    },
+    {
+        "id": 4,
+        "src": "/images/photo4.jpg",
+        "desc": "We went picnic today and this is very beautiful!",
+        "likes": 2005,
+        "comments_amt": 8,
+        "liked": false
+    },
+	{
+        "id": 2,
+        "src": "/images/photo2.jpg",
+        "desc": "We visited zoo today",
+        "likes": 114,
+        "comments_amt": 4,
+        "liked": false
+    },
+    {
+        "id": 5,
+        "src": "/images/photo5.jpg",
+        "desc": "Happy wedding for my friend! #flowers",
+        "likes": 95,
+        "comments_amt": 3,
+        "liked": true
+    }
+]
