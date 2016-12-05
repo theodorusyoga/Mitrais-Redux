@@ -18,6 +18,7 @@ app.use(express.static(path.join(__dirname, 'vendors')));
 app.use(express.static(path.join(__dirname, 'build')));
 app.use(express.static(path.join(__dirname, 'css')));
 app.use('/json', express.static(path.join(__dirname, 'json')));
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app.get('/', function(request, response) {
   response.sendFile(__dirname + '/index.html')
