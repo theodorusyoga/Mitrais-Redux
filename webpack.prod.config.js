@@ -3,16 +3,12 @@ var path = require('path');
 const debug = process.env.NODE_ENV !== "production";
 
 module.exports = {
-    devtool: debug ? 'source-map' : null,
+    devtool: 'source-map',
     entry: './main.js',
     output:
     {
         path: './',
         filename: 'index.js'
-    },
-    devServer: {
-        inline: true,
-        port: 5000
     },
     module:
     {

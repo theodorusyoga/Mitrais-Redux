@@ -31,8 +31,8 @@
   },
   "scripts": {
     "webpack:deploy": "webpack --config=webpack/webpack.prod.config.js -p",
-    "heroku-postbuild": "webpack -p --config ./webpack.prod.config.js --progress",
-	"start" : "webpack-dev-server"
+    "build": "webpack -p --config ./webpack.prod.config.js --progress --colors",
+	"start" : "node App.js"
   },
   "author": "",
   "license": "ISC"
