@@ -11,6 +11,7 @@
     "babel-preset-es2016": "^6.16.0",
     "babel-preset-react": "^6.16.0",
     "browserfs": "^1.1.0",
+    "express": "^4.14.0",
     "jsonfile": "^2.4.0",
     "react": "^15.3.2",
     "react-addons-css-transition-group": "^15.3.2",
@@ -22,15 +23,17 @@
     "redux": "^3.6.0",
     "superagent": "^3.1.0",
     "superagent-auth-bearer": "0.0.1",
-    "webpack": "^1.13.3",
-    "webpack-dev-server": "^1.16.2"
+    "webpack": "^1.13.3"
   },
   "devDependencies": {
     "babel-loader": "^6.2.7",
-    "redux-devtools": "^3.3.1"
+    "redux-devtools": "^3.3.1",
+    "webpack-dev-server": "^1.16.2"
   },
   "scripts": {
-	"start" : "webpack-dev-server"
+    "webpack:deploy": "webpack --config=webpack/webpack.prod.config.js -p",
+    "heroku-postbuild": "webpack -p --config ./webpack.prod.config.js --progress --colors",
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC"
