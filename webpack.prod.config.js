@@ -1,8 +1,9 @@
 var webpack = require("webpack");
 var path = require('path');
+const debug = process.env.NODE_ENV !== "production";
 
 module.exports = {
-    devtool: 'source-map',
+    devtool: debug ? 'source-map' : null,
     entry: './main.js',
     output:
     {
@@ -42,7 +43,19 @@ module.exports = {
         // Expose BrowserFS, process, and Buffer globals.
         // NOTE: If you intend to use BrowserFS in a script tag, you do not need
         // to expose a BrowserFS global.
-        new webpack.ProvidePlugin({ BrowserFS: 'bfsGlobal', Buffer: 'bufferGlobal' })
+        new webpack.ProvidePlugin({ BrowserFS: 'bfsGlobal', Buffer: 'bufferGlobal' }),
+        new webpack.optimize.DedupePlugin(),
+        new webpack.optimize.UglifyJsPlugin({
+            minimize: true,
+            compress: {
+                warnings: false
+            }
+        }),
+        new webpack.DefinePlugin({
+            'process.env': {
+                'NODE_ENV': JSON.stringify('production')
+            }
+        })
     ],
     // DISABLE Webpack's built-in process and Buffer polyfills!
     node: {

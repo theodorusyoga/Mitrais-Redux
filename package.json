@@ -30,7 +30,9 @@
     "redux-devtools": "^3.3.1"
   },
   "scripts": {
-	"start" : "webpack-dev-server"
+    "webpack:deploy": "webpack --config=webpack/webpack.prod.config.js -p",
+    "heroku-postbuild": "webpack -p --config ./webpack.prod.config.js --progress"
+	"start" : "node index.js"
   },
   "author": "",
   "license": "ISC"
