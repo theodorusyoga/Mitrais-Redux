@@ -8,10 +8,11 @@ const picture = (state = {}, action) => {
                 likes: action.likes,
                 comments_amt: action.comments_amt,
                 liked: false
-            }
+            };
         case 'ADD_LIKE':
-            if (state.id != action.id)
+            if (state.id !== action.id) {
                 return state;
+            }
             return {
                 id: action.id,
                 src: action.src,
@@ -19,10 +20,11 @@ const picture = (state = {}, action) => {
                 likes: action.likes + 1,
                 comments_amt: action.comments_amt,
                 liked: true
-            }
+            };
         case 'REMOVE_LIKE':
-            if (state.id != action.id)
+            if (state.id !== action.id) {
                 return state;
+            }
             return {
                 id: action.id,
                 src: action.src,
@@ -30,9 +32,9 @@ const picture = (state = {}, action) => {
                 likes: action.likes - 1,
                 comments_amt: action.comments_amt,
                 liked: false
-            }
+            };
     }
-}
+};
 
 const pictures = (state = [], action) => {
     switch (action.type) {
@@ -40,20 +42,20 @@ const pictures = (state = [], action) => {
             return [
                 ...state,
                 picture(undefined, action)
-            ]
+            ];
         case 'ADD_LIKE':
             return state.map(item =>
-                picture(item, action))
+                picture(item, action));
         case 'REMOVE_LIKE':
             return state.map(item =>
-                picture(item, action))
+                picture(item, action));
         case 'CLEAR_PICTURES':
-            return []
+            return [];
         case 'STORE_PICTURES':
-            return action.pictures
+            return action.pictures;
         default:
             return state;
     }
-}
+};
 
-export default pictures
+export default pictures;

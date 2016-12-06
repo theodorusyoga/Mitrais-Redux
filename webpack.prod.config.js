@@ -49,6 +49,11 @@ module.exports = {
             compress: {
                 warnings: false
             }
+        }),
+        new webpack.DefinePlugin({
+            'process.env': {
+                'NODE_ENV': JSON.stringify('production')
+            }
         })
     ],
     // DISABLE Webpack's built-in process and Buffer polyfills!

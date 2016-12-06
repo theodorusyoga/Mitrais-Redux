@@ -1,21 +1,20 @@
-import React from 'react'
-import { IndexRoute, Router, Route, Link, hashHistory, browserHistory } from 'react-router'
-import { addPic } from '../actions'
+import React from 'react';
+import { Link } from 'react-router';
 
 let nolike = {
     color: 'black'
-}
+};
 let withlike = {
     color: 'red'
-}
+};
 
 class Insta extends React.Component {
-    componentDidMount() {
-        const { login, onLoad } = this.props
-        onLoad(login.accesstoken)
+    componentDidMount () {
+        const { login, onLoad } = this.props;
+        onLoad(login.accesstoken);
     }
-    render() {
-        const { pictures, onLikeClick, onDislikeClick, onLogout, login } = this.props
+    render () {
+        const { pictures, onLikeClick, onDislikeClick, onLogout, login } = this.props;
         return (
             <div>
                 <nav className="navbar navbar-default">
@@ -24,9 +23,9 @@ class Insta extends React.Component {
                         <div className="navbar-header">
                             <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
                                 <span className="sr-only">Toggle navigation</span>
-                                <span className="icon-bar"></span>
-                                <span className="icon-bar"></span>
-                                <span className="icon-bar"></span>
+                                <span className="icon-bar"/>
+                                <span className="icon-bar"/>
+                                <span className="icon-bar"/>
                             </button>
                             <a className="navbar-brand" href="/#/"><b>fakestagram</b></a>
                         </div>
@@ -34,7 +33,7 @@ class Insta extends React.Component {
 
                         <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                             <ul className="nav navbar-nav navbar-right">
-                                <li><a onClick={() => onLogout()} className="btn btn-danger navbar-btn" href="#"><span className="glyphicon glyphicon-log-out"></span>&nbsp;Log Out</a></li>
+                                <li><a onClick={() => onLogout()} className="btn btn-danger navbar-btn" href="#"><span className="glyphicon glyphicon-log-out"/>&nbsp;Log Out</a></li>
                             </ul>
                         </div>
                     </div>
@@ -51,10 +50,10 @@ class Insta extends React.Component {
                                         <p>{pic.desc}</p>
                                         <br />
                                         <p><button onClick={pic.liked ? () => onDislikeClick(pic, login.accesstoken) : () => onLikeClick(pic, login.accesstoken)} href="#" className="instabtn btn btn-default" role="button">
-                                            <span style={pic.liked ? withlike : nolike}><b>{pic.likes}</b>&nbsp;<span className="glyphicon glyphicon-heart"></span></span></button>
+                                            <span style={pic.liked ? withlike : nolike}><b>{pic.likes}</b>&nbsp;<span className="glyphicon glyphicon-heart"/></span></button>
                                             <Link to={{ pathname: '/view', query: { id: pic.id } }} className="instabtn btn btn-default">
                                                 <b>{pic.comments_amt}</b>&nbsp;
-                                        <span className="glyphicon glyphicon-comment"></span></Link></p>
+                                        <span className="glyphicon glyphicon-comment"/></Link></p>
                                     </div>
                                 </div>
                             </div>
@@ -64,7 +63,7 @@ class Insta extends React.Component {
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 }
 
@@ -80,4 +79,4 @@ Insta.propTypes = {
     dispatch: React.PropTypes.func.isRequired
 };
 
-export default Insta
+export default Insta;

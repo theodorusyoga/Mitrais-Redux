@@ -9,16 +9,16 @@ const picdetails = (state = {}, action) => {
                 likes: action.likes,
                 liked: action.liked,
                 comments_amt: 0
-            }
+            };
         case 'GET_COMMENTS': {
             return Object.assign({}, state, {
                 comments_amt: action.comments_amt
-            })
+            });
         }
         case 'ADD_COMMENT':
             return Object.assign({}, state, {
                 comments_amt: state.comments_amt + 1
-            })
+            });
         case 'CLEAR_PIC':
             return {
                 id: 0,
@@ -27,7 +27,7 @@ const picdetails = (state = {}, action) => {
                 liked: false,
                 comments_amt: 0,
                 src: '/images/loader.gif'
-            }
+            };
         case 'ADD_LIKE_PIC':
             return {
                 id: action.id,
@@ -36,7 +36,7 @@ const picdetails = (state = {}, action) => {
                 likes: action.likes + 1,
                 liked: true,
                 comments_amt: action.comments_amt
-            }
+            };
         case 'REMOVE_LIKE_PIC':
             return {
                 id: action.id,
@@ -45,15 +45,15 @@ const picdetails = (state = {}, action) => {
                 likes: action.likes - 1,
                 liked: false,
                 comments_amt: action.comments_amt
-            }
+            };
         case 'REMOVE_COMMENT':
             return Object.assign({}, state, {
                 comments_amt: state.comments_amt - 1
-            })
+            });
 
         default:
-            return state
+            return state;
     }
-}
+};
 
-export default picdetails
+export default picdetails;

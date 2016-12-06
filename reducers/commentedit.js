@@ -1,39 +1,37 @@
-const editcomment = (state = {
-
-}, action) => {
+const editcomment = (state = { }, action) => {
     switch (action.type) {
         case 'EDIT_COMMENT':
             var obj = {
                 id: action.id,
                 text: action.text,
                 type: 'EDIT'
-            }
-            return obj
+            };
+            return obj;
         case 'CANCEL_COMMENT':
-            var obj = {
+            var cancelaction = {
                 id: action.id,
                 text: action.text,
                 type: 'CANCEL'
-            }
-            return obj
+            };
+            return cancelaction;
         case 'CLEAR_COMMENT':
-            var obj = {
+            var clearedobj = {
                 id: null,
                 text: ''
-            }
-            return obj
+            };
+            return clearedobj;
         case 'INITIATE_SAVE_COMMENT':
             return {
                 id: action.id,
                 type: 'SAVE'
-            }
+            };
         case 'SAVE_COMMENT':
-            return {} //remove status
+            return {}; //remove status
         case 'RESET_COMMENT_EDIT':
-            return {}
+            return {};
         default:
             return state;
     }
-}
+};
 
-export default editcomment
+export default editcomment;

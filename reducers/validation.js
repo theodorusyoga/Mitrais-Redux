@@ -7,12 +7,12 @@ const login = (state = {}, action) => {
                 fullname: action.fullname,
                 accesstoken: action.accesstoken,
                 expires: action.expires
-            }
+            };
         case 'CLEAR_CREDENTIAL':
-            return {}
+            return {};
         default:
-            return state
+            return state;
     }
-}
+};
 
-export default login
+export default login;
